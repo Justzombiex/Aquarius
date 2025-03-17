@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquarius", "Aquarius\Aquarius.csproj", "{FA2AD1D6-4943-4789-B3DC-148B5441B4E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquarius.Domain", "Aquarius.Domain\Aquarius.Domain.csproj", "{E98C6158-C6B6-42F0-9FF5-10473C695021}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FA2AD1D6-4943-4789-B3DC-148B5441B4E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA2AD1D6-4943-4789-B3DC-148B5441B4E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA2AD1D6-4943-4789-B3DC-148B5441B4E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E98C6158-C6B6-42F0-9FF5-10473C695021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E98C6158-C6B6-42F0-9FF5-10473C695021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E98C6158-C6B6-42F0-9FF5-10473C695021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E98C6158-C6B6-42F0-9FF5-10473C695021}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
