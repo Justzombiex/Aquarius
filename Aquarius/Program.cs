@@ -1,5 +1,6 @@
+using Aquarius.Data;
 
-namespace Aquarius
+namespace Aquarius.Services
 {
     public class Program
     {
@@ -13,6 +14,12 @@ namespace Aquarius
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<AquariusDbContext>(options =>
+            {
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
 
             var app = builder.Build();
 
