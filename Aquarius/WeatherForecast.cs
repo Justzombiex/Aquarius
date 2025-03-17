@@ -1,4 +1,4 @@
-namespace Aquarius.Services
+namespace Aquarius
 {
     public class WeatherForecast
     {

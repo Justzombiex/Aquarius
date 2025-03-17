@@ -1,4 +1,5 @@
 using Aquarius.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aquarius.Services
 {
