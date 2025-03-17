@@ -8,6 +8,8 @@ namespace Aquarius.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Reading> builder)
         {
+            builder.ToTable("Readings");
+
             builder.HasKey(r => r.Id);
 
             builder.Property(r => r.Value)

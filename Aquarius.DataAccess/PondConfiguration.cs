@@ -8,6 +8,8 @@ namespace Aquarius.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Pond> builder)
         {
+            builder.ToTable("Ponds");
+
             builder.HasKey(p => p.Id);
 
             builder.Property(p => p.Name)

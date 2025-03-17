@@ -8,6 +8,8 @@ namespace Aquarius.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Alert> builder)
         {
+            builder.ToTable("Alerts");
+
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.Message)

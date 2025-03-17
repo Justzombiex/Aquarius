@@ -8,6 +8,7 @@ namespace Aquarius.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Sensor> builder)
         {
+            builder.ToTable("Sensors");
 
             builder.HasKey(s => s.Id);
 

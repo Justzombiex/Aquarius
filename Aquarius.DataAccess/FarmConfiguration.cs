@@ -8,6 +8,7 @@ namespace Aquarius.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Farm> builder)
         {
+            builder.ToTable("Farms");
 
             builder.HasKey(f => f.Id); // Clave primaria
 
