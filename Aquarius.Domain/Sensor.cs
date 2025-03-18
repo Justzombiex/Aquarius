@@ -8,7 +8,7 @@
         public Pond Pond { get; set; }
         public List<Reading> Readings { get; set; } = new List<Reading>();
 
-        protected Sensor() { }
+        public Sensor() { }
         public Sensor(VariableType type, Pond pond)
         {
             Id = Guid.NewGuid();

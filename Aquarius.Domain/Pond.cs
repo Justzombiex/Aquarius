@@ -9,7 +9,7 @@
         public Farm Farm { get; set; }
         public List<Sensor> Sensors { get; set; } = new List<Sensor>();
 
-        protected Pond() { }    
+        public Pond() { }
         public Pond(string name, int capacity, Farm farm)
         {
             Id = Guid.NewGuid();
