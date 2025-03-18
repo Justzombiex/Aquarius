@@ -1,4 +1,5 @@
 using Aquarius.Data;
+using Aquarius.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aquarius.Services
@@ -16,10 +17,16 @@ namespace Aquarius.Services
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<ApplicationContext>(options =>
+            builder.Services.AddDbContext<AquariusDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddScoped<IFarmRepository, FarmRepository>();
+            builder.Services.AddScoped<IPondRepository, PondRepository>();
+            builder.Services.AddScoped<ISensorRepository, SensorRepository>();
+            builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
+            builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
 
             var app = builder.Build();

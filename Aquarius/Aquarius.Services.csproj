@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aquarius.Application\Aquarius.Application.csproj" />
     <ProjectReference Include="..\Aquarius.DataAccess\Aquarius.DataAccess.csproj" />
   </ItemGroup>
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Aquarius.Data
 {
-    public class ApplicationContext : DbContext
+    public class AquariusDbContext : DbContext
     {
         public DbSet<Farm> Farms { get; set; }
         public DbSet<Pond> Ponds { get; set; }
@@ -16,17 +16,17 @@ namespace Aquarius.Data
         /// <summary>
         /// Requerired by EntityFrameworkCore for migration.
         /// </summary>
-        protected ApplicationContext()
+        protected AquariusDbContext()
         {
         }
 
-        public ApplicationContext(string connectionString) 
+        public AquariusDbContext(string connectionString) 
             : base(GetOptions(connectionString))
         {
         }
 
         
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        public AquariusDbContext(DbContextOptions<AquariusDbContext> options)
             : base(options)
         {
         }
@@ -50,11 +50,11 @@ namespace Aquarius.Data
             return NpgsqlDbContextOptionsBuilderExtensions.UseNpgsql(new DbContextOptionsBuilder(), connectionString).Options;
         }
 
-        public class ApplicationContextFactory : IDesignTimeDbContextFactory<ApplicationContext>
+        public class ApplicationContextFactory : IDesignTimeDbContextFactory<AquariusDbContext>
         {
-            public ApplicationContext CreateDbContext(string[] args)
+            public AquariusDbContext CreateDbContext(string[] args)
             {
-                var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
+                var optionsBuilder = new DbContextOptionsBuilder<AquariusDbContext>();
 
                 try
                 {
@@ -67,7 +67,7 @@ namespace Aquarius.Data
                     throw;
                 }
 
-                return new ApplicationContext(optionsBuilder.Options);
+                return new AquariusDbContext(optionsBuilder.Options);
             }
         }
     }
