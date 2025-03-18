@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Aquarius.Data
 {
-    public class AquariusDbContext : DbContext
+    public class ApplicationContext : DbContext
     {
         public DbSet<Farm> Farms { get; set; }
         public DbSet<Pond> Ponds { get; set; }
@@ -16,17 +16,17 @@ namespace Aquarius.Data
         /// <summary>
         /// Requerired by EntityFrameworkCore for migration.
         /// </summary>
-        protected AquariusDbContext()
+        protected ApplicationContext()
         {
         }
 
-        public AquariusDbContext(string connectionString) 
+        public ApplicationContext(string connectionString) 
             : base(GetOptions(connectionString))
         {
         }
 
         
-        public AquariusDbContext(DbContextOptions<AquariusDbContext> options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
         }
@@ -50,15 +50,15 @@ namespace Aquarius.Data
             return NpgsqlDbContextOptionsBuilderExtensions.UseNpgsql(new DbContextOptionsBuilder(), connectionString).Options;
         }
 
-        public class ApplicationContextFactory : IDesignTimeDbContextFactory<AquariusDbContext>
+        public class ApplicationContextFactory : IDesignTimeDbContextFactory<ApplicationContext>
         {
-            public AquariusDbContext CreateDbContext(string[] args)
+            public ApplicationContext CreateDbContext(string[] args)
             {
-                var optionsBuilder = new DbContextOptionsBuilder<AquariusDbContext>();
+                var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
 
                 try
                 {
-                    var connectionString = "Host=localhost;Database=CodeAgendaDB;Username=postgres;Password=1234";
+                    var connectionString = "Host=localhost;Database=AquariusDB;Username=postgres;Password=1234";
                     optionsBuilder.UseNpgsql(connectionString);
                 }
                 catch (Exception)
@@ -67,7 +67,7 @@ namespace Aquarius.Data
                     throw;
                 }
 
-                return new AquariusDbContext(optionsBuilder.Options);
+                return new ApplicationContext(optionsBuilder.Options);
             }
         }
     }

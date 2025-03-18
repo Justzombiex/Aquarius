@@ -11,6 +11,8 @@ namespace Aquarius.Domain
         public Pond Pond { get; set; }
         public VariableType VariableType { get; set; } // "Temperature" or "Level"
 
+        protected Alert() { }
+
         public Alert(string message, VariableType type, DateTime timestamp, Pond pond)
         {
             Id = Guid.NewGuid();

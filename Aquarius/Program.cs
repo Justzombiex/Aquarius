@@ -16,7 +16,7 @@ namespace Aquarius.Services
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<AquariusDbContext>(options =>
+            builder.Services.AddDbContext<ApplicationContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });

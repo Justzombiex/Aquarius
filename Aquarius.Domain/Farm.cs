@@ -7,6 +7,7 @@
         public string Location { get; set; }
         public List<Pond> Ponds { get; set; } = new List<Pond>();
 
+        protected Farm() { }
         public Farm(string name, string location)
         {
             Id = Guid.NewGuid();

@@ -7,6 +7,7 @@
         public Guid SensorId { get; set; }
         public Sensor Sensor { get; set; }
 
+        protected Reading() { }
         public Reading(double value, DateTime timestamp, Sensor sensor)
         {
             Id = Guid.NewGuid();
