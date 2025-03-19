@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Farm } from '../models/farm.model';
+import { environment } from '../../environments/environment.farm';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FarmService {
-  private apiUrl = 'https://localhost:5001/api/Farms';
 
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
+  private apiUrl = 'https://localhost:7185/api/Farms';
+
 
   getFarms(): Observable<Farm[]> {
     return this.http.get<Farm[]>(this.apiUrl);

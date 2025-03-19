@@ -10,10 +10,8 @@ namespace Aquarius.Services
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            // Agregar servicios al contenedor
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -28,10 +26,20 @@ namespace Aquarius.Services
             builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
             builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
+            // Configuración de CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Middleware en el orden correcto
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -40,12 +48,16 @@ namespace Aquarius.Services
 
             app.UseHttpsRedirection();
 
+            app.UseRouting(); // UseRouting primero
+
+            app.UseCors("AllowAngularApp"); // Aplicar CORS DESPUÉS de UseRouting
+
             app.UseAuthorization();
 
-
-            app.MapControllers();
+            app.MapControllers(); // UseEndpoints está implícito aquí con MapControllers()
 
             app.Run();
         }
     }
+
 }
