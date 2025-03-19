@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { ReadingService } from '../../services/reading.service';
 import { Reading } from '../../models/reading.model';
@@ -29,3 +30,16 @@ export class ReadingComponent implements OnInit {
     );
   }
 }
+=======
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-reading',
+  imports: [],
+  templateUrl: './reading.component.html',
+  styleUrl: './reading.component.css'
+})
+export class ReadingComponent {
+
+}
+>>>>>>> 957651ab69f38f9c9b52999ab9d286d402ce51e6
