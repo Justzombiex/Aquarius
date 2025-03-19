@@ -1,0 +1,13 @@
+<h1>Readings</h1>
+
+<button mat-raised-button color="primary" routerLink="/readings/new">Add Reading</button>
+
+<mat-list>
+  <mat-list-item *ngFor="let reading of readings">
+    <h3 mat-line>Value: {{ reading.value }}</h3>
+    <p mat-line>Timestamp: {{ reading.timestamp }}</p>
+    <p mat-line>Sensor ID: {{ reading.sensorId }}</p>
+    <button mat-button (click)="editReading(reading.id)">Edit</button>
+    <button mat-button color="warn" (click)="deleteReading(reading.id)">Delete</button>
+  </mat-list-item>
+</mat-list>

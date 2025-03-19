@@ -1,0 +1,12 @@
+<h1>Ponds</h1>
+
+<button mat-raised-button color="primary" routerLink="/ponds/new">Add Pond</button>
+
+<mat-list>
+  <mat-list-item *ngFor="let pond of ponds">
+    <h3 mat-line>{{ pond.name }}</h3>
+    <p mat-line>Capacity: {{ pond.capacity }}</p>
+    <button mat-button (click)="editPond(pond.id)">Edit</button>
+    <button mat-button color="warn" (click)="deletePond(pond.id)">Delete</button>
+  </mat-list-item>
+</mat-list>

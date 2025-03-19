@@ -1,0 +1,12 @@
+<h1>Sensors</h1>
+
+<button mat-raised-button color="primary" routerLink="/sensors/new">Add Sensor</button>
+
+<mat-list>
+  <mat-list-item *ngFor="let sensor of sensors">
+    <h3 mat-line>{{ sensor.variableType }}</h3>
+    <p mat-line>Pond ID: {{ sensor.pondId }}</p>
+    <button mat-button (click)="editSensor(sensor.id)">Edit</button>
+    <button mat-button color="warn" (click)="deleteSensor(sensor.id)">Delete</button>
+  </mat-list-item>
+</mat-list>
