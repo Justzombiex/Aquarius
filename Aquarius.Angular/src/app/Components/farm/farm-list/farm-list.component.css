@@ -1,45 +1,36 @@
 .sidenav-container {
-    display: flex;
-    height: 100vh;
-    background-color: #e3f2fd; /* Azul pastel claro */
-  }
-  
-  mat-sidenav {
-    width: 250px;
-    background-color: #bbdefb; /* Azul pastel medio */
-    color: #000000; /* Texto negro */
-  }
-  
-  mat-toolbar {
-    font-size: 18px;
-    font-weight: bold;
-    color: #000000; /* Texto negro */
-  }
-  
-  mat-toolbar.color-primary {
-    background-color: #90caf9; /* Azul pastel oscuro */
-  }
-  
-  mat-nav-list a {
-    font-size: 16px;
-    color: #ffffff; /* Texto negro */
-    text-decoration: none;
-  }
-  
-  mat-nav-list a:hover {
-    color: #ffffff; /* Texto negro al pasar el mouse */
-    background-color: #2a1bb1; /* Azul pastel más intenso */
-  }
-  
-  mat-sidenav-content {
-    flex: 1;
-    padding: 16px;
-    background-color: #e3f2fd; /* Azul pastel claro */
-  }
-  
-  .content p {
-    font-size: 18px;
-    color: #000000; /* Texto negro */
-    margin-top: 16px;
-  }
-  
+  height: 100vh;
+  background-color: #e3f2fd; /* Azul claro como fondo */
+}
+
+mat-toolbar {
+  background-color: #0288d1; /* Azul profundo para el toolbar */
+  color: #ffffff; /* Texto blanco para contraste */
+  font-size: 20px;
+  font-weight: bold;
+}
+
+mat-nav-list {
+  background-color: #b3e5fc; /* Azul suave */
+  padding: 8px;
+}
+
+button[mat-button] {
+  width: 100%; /* Que ocupe todo el ancho */
+  text-align: left; /* Alineación del texto */
+  color: #212121; /* Letras negras */
+  background-color: #81d4fa; /* Azul pastel */
+  border-radius: 4px; /* Bordes redondeados */
+  font-size: 16px; /* Tamaño de letra */
+  margin: 8px 0; /* Espaciado entre botones */
+  padding: 8px 12px; /* Relleno interno */
+}
+
+button[mat-button]:hover {
+  background-color: #0288d1; /* Azul más fuerte al pasar el ratón */
+  color: #ffffff; /* Texto blanco al hacer hover */
+}
+
+button[mat-button]:active {
+  background-color: #01579b; /* Azul aún más oscuro cuando se presiona */
+}

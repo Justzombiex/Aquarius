@@ -8,8 +8,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatExpansionModule} from '@angular/material/expansion';
-
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { FarmService } from '../../../services/farm.service';
 import { Farm } from '../../../models/farm.model';
@@ -26,40 +25,16 @@ import { signal } from '@angular/core';
     MatSidenavModule,
     MatListModule,
     MatToolbarModule,
-    MatExpansionModule
+    MatExpansionModule,
   ],
   templateUrl: './farm-list.component.html',
   styleUrls: ['./farm-list.component.css'],
 })
-export class FarmListComponent implements OnInit {
-  private farmService = inject(FarmService);
+export class FarmListComponent {
+  selectedOption: string | null = null;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  farms = signal<Farm[]>([]);
-
-  displayedColumns: string[] = ['name'];
-  dataSource = new MatTableDataSource<Farm>([]);
-
-  ngOnInit(): void {
-    this.loadFarm();
-  }
-
-  loadFarm() {
-    this.farmService.getFarms().subscribe({
-      next: (farms) => {
-        console.log('Received farms:', farms);
-        this.farms.set(farms);
-        this.updateTableData();
-      },
-      error: (err) => {
-        console.error('Error getting farms:', err);
-      },
-    });
-  }
-
-  updateTableData() {
-    this.dataSource.data = this.farms();
-    this.dataSource.paginator = this.paginator;
+  selectOption(option: string) {
+    this.selectedOption = option;
+    console.log(`Opción seleccionada: ${option}`);
   }
 }

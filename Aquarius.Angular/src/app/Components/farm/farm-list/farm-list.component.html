@@ -1,11 +1,25 @@
 <mat-sidenav-container class="sidenav-container">
-    <!-- Menú lateral -->
-    <mat-sidenav mode="side" opened>
-      <mat-toolbar color="primary">Granjas</mat-toolbar>
-      <mat-nav-list>
-        <a mat-list-item *ngFor="let farm of farms()">
-          {{ farm.name }}
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
-  </mat-sidenav-container>
+  <!-- Menú lateral -->
+  <mat-sidenav mode="side" opened>
+    <mat-toolbar color="primary">Granjas</mat-toolbar>
+    <mat-nav-list>
+      <button mat-button (click)="selectOption('tilapia')">Granja de tilapias</button>
+      <button mat-button (click)="selectOption('alert')">Alertas</button>
+      <button mat-button (click)="selectOption('sensor')">Sensor</button>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="table-container">
+      <div *ngIf="selectedOption === 'tilapia'">
+        <mat-toolbar color="accent">Datos de la especie</mat-toolbar>
+      </div>
+      <div *ngIf="selectedOption === 'alert'">
+        <mat-toolbar color="warn">Alertas</mat-toolbar>
+      </div>
+      <div *ngIf="selectedOption === 'sensor'">
+        <mat-toolbar color="warn">Datos de los sensores</mat-toolbar>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
