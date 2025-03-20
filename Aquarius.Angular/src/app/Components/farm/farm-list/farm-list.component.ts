@@ -5,40 +5,44 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import {MatExpansionModule} from '@angular/material/expansion';
+
+
 import { FarmService } from '../../../services/farm.service';
 import { Farm } from '../../../models/farm.model';
-import { signal, Signal } from '@angular/core';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-farm-list',
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatPaginatorModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSidenavModule,
+    MatListModule,
+    MatToolbarModule,
+    MatExpansionModule
+  ],
   templateUrl: './farm-list.component.html',
-  styleUrl: './farm-list.component.css',
+  styleUrls: ['./farm-list.component.css'],
 })
 export class FarmListComponent implements OnInit {
   private farmService = inject(FarmService);
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   farms = signal<Farm[]>([]);
 
-  displayedColumns: string[] = ['id', 'location', 'name', 'actions'];
+  displayedColumns: string[] = ['name'];
   dataSource = new MatTableDataSource<Farm>([]);
 
   ngOnInit(): void {
     this.loadFarm();
-    /*  this.farmService.getFarms().subscribe({
-        next:(resp)=>{
-            console.log('API response', resp);
-
-        },
-        error:(err)=>{
-            console.log('Error getting farms', err)
-
-        },
-        complete:()=>{
-
-        }
-     }) */
   }
 
   loadFarm() {
@@ -49,17 +53,13 @@ export class FarmListComponent implements OnInit {
         this.updateTableData();
       },
       error: (err) => {
-        console.error('Error getting farms', err);
+        console.error('Error getting farms:', err);
       },
     });
   }
 
-  updateTableData(){
+  updateTableData() {
     this.dataSource.data = this.farms();
     this.dataSource.paginator = this.paginator;
   }
-
-  navigateToForm(id?: string) {}
-
-  deleteFarm(id?: string) {}
 }

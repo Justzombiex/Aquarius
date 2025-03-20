@@ -1,0 +1,45 @@
+.sidenav-container {
+    display: flex;
+    height: 100vh;
+    background-color: #e3f2fd; /* Azul pastel claro */
+  }
+  
+  mat-sidenav {
+    width: 250px;
+    background-color: #bbdefb; /* Azul pastel medio */
+    color: #000000; /* Texto negro */
+  }
+  
+  mat-toolbar {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000; /* Texto negro */
+  }
+  
+  mat-toolbar.color-primary {
+    background-color: #90caf9; /* Azul pastel oscuro */
+  }
+  
+  mat-nav-list a {
+    font-size: 16px;
+    color: #ffffff; /* Texto negro */
+    text-decoration: none;
+  }
+  
+  mat-nav-list a:hover {
+    color: #ffffff; /* Texto negro al pasar el mouse */
+    background-color: #2a1bb1; /* Azul pastel más intenso */
+  }
+  
+  mat-sidenav-content {
+    flex: 1;
+    padding: 16px;
+    background-color: #e3f2fd; /* Azul pastel claro */
+  }
+  
+  .content p {
+    font-size: 18px;
+    color: #000000; /* Texto negro */
+    margin-top: 16px;
+  }
+  

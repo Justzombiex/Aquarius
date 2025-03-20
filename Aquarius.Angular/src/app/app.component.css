@@ -1,0 +1,16 @@
+.title {
+  font-family: 'Poppins', sans-serif; /* Fuente moderna y estilizada */
+  font-size: 36px; /* Tamaño del texto grande y destacado */
+  font-weight: 700; /* Negrita para énfasis */
+  color: #1976d2; /* Azul atractivo (color Material Design) */
+  text-transform: uppercase; /* Convierte el texto a mayúsculas */
+  letter-spacing: 2px; /* Espaciado entre letras */
+}
+
+.fish-icon {
+  width: 40px; /* Ajusta el ancho */
+  height: 40px; /* Ajusta la altura */
+  margin-left: 8px; /* Espacio entre el texto y el ícono */
+  vertical-align: middle; /* Alinea el ícono con el texto */
+}
+
