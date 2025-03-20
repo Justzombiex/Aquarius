@@ -3,7 +3,7 @@
   <mat-sidenav mode="side" opened>
     <mat-toolbar color="primary">Granjas</mat-toolbar>
     <mat-nav-list>
-      <button mat-button (click)="selectOption('tilapia')">Granja de tilapias</button>
+      <button mat-button (click)="selectOption('tilapia')">Datos de la especie</button>
       <button mat-button (click)="selectOption('alert')">Alertas</button>
       <button mat-button (click)="selectOption('sensor')">Sensor</button>
     </mat-nav-list>
@@ -13,9 +13,28 @@
     <div class="table-container">
       <div *ngIf="selectedOption === 'tilapia'">
         <mat-toolbar color="accent">Datos de la especie</mat-toolbar>
+        <div class="species-info">
+          <h2>Tilapia</h2>
+          <p>
+            La Tilapia es una especie resistente y ampliamente cultivada en
+            acuicultura. Es conocida por su sabor suave, rápido crecimiento y
+            capacidad para adaptarse a diferentes ambientes.
+          </p>
+          <h3>Condiciones ideales:</h3>
+          <ul>
+            <li>Temperatura del agua: Entre 25 °C y 30 °C.</li>
+            <li>Niveles de oxígeno disuelto: Más de 5 mg/L.</li>
+            <li>pH del agua: Rango óptimo entre 6.5 y 8.5.</li>
+            <li>Salinidad: Puede tolerar agua dulce y salobre.</li>
+            <li>
+              Alimentación: Dieta rica en proteínas basada en pellets y
+              vegetación.
+            </li>
+          </ul>
+        </div>
       </div>
       <div *ngIf="selectedOption === 'alert'">
-        <mat-toolbar color="warn">Alertas</mat-toolbar>
+        <mat-toolbar color="warn">Alertas</mat-toolbar>      
       </div>
       <div *ngIf="selectedOption === 'sensor'">
         <mat-toolbar color="warn">Datos de los sensores</mat-toolbar>
