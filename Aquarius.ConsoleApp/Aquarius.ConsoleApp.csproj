@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+    <PackageReference Include="System.IO.Ports" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Aquarius.Application\Aquarius.Application.csproj" />
     <ProjectReference Include="..\Aquarius.DataAccess\Aquarius.DataAccess.csproj" />
     <ProjectReference Include="..\Aquarius.Domain\Aquarius.Domain.csproj" />

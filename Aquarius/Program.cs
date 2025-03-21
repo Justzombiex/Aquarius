@@ -1,6 +1,7 @@
 using Aquarius.Data;
 using Aquarius.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.IO.Ports;
 
 namespace Aquarius.Services
 {
@@ -57,6 +58,56 @@ namespace Aquarius.Services
             app.MapControllers(); // UseEndpoints está implícito aquí con MapControllers()
 
             app.Run();
+
+
+
+            //Obtener los datos del Arduino
+
+            // Configurar el puerto serial
+
+            SerialPort serialPort = new SerialPort("COM3", 9600); // Cambia "COM3" por el puerto correcto
+
+            serialPort.Open();
+
+            while (true)
+            {
+                // Leer una línea de datos desde el puerto serial
+                string data = serialPort.ReadLine();
+
+                // Procesar los datos recibidos
+                ProcesarDatos(data);
+            }
+        }
+
+        static void ProcesarDatos(string data)
+        {
+            // Dividir los datos en partes (temperatura y nivel)
+            string[] partes = data.Split(',');
+
+            if (partes.Length == 2)
+            {
+                try
+                {
+                    // Extraer el valor de temperatura (float)
+                    string temperaturaStr = partes[0].Substring(2); // Eliminar "T:"
+                    float temperatura = float.Parse(temperaturaStr);
+
+                    // Extraer el valor de nivel (bool)
+                    string nivelStr = partes[1].Substring(2); // Eliminar "L:"
+                    bool nivel = nivelStr == "1"; // Convertir "1" a true y "0" a false
+
+                    // Mostrar los valores en la consola
+                    Console.WriteLine($"Temperatura: {temperatura:F2} °C, Nivel: {nivel}");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: Formato de datos incorrecto.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Datos incompletos.");
+            }
         }
     }
 
