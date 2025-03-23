@@ -3,7 +3,9 @@
   <mat-sidenav mode="side" opened>
     <mat-toolbar color="primary">Granjas</mat-toolbar>
     <mat-nav-list>
-      <button mat-button (click)="selectOption('tilapia')">Datos de la especie</button>
+      <button mat-button (click)="selectOption('tilapia')">
+        Datos de la especie
+      </button>
       <button mat-button (click)="selectOption('alert')">Alertas</button>
       <button mat-button (click)="selectOption('sensor')">Sensor</button>
     </mat-nav-list>
@@ -32,14 +34,23 @@
             </li>
           </ul>
           <!-- Contenedor para las imágenes -->
-          <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <img src="assets/tilapia1.jpg" alt="Tilapia 1" class="tilapia-image">
-            <img src="assets/tilapia2.jpg" alt="Tilapia 2" class="tilapia-image">
+          <div style="display: flex; gap: 10px; margin-top: 20px">
+            <img
+              src="assets/tilapia1.jpg"
+              alt="Tilapia 1"
+              class="tilapia-image"
+            />
+            <img
+              src="assets/tilapia2.jpg"
+              alt="Tilapia 2"
+              class="tilapia-image"
+            />
           </div>
         </div>
       </div>
       <div *ngIf="selectedOption === 'alert'">
-        <mat-toolbar color="warn">Alertas</mat-toolbar>      
+        <mat-toolbar color="warn">Alertas</mat-toolbar>
+        <app-alert-list></app-alert-list>
       </div>
       <div *ngIf="selectedOption === 'sensor'">
         <mat-toolbar color="warn">Datos de los sensores</mat-toolbar>

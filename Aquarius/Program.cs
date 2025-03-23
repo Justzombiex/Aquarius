@@ -10,16 +10,18 @@ namespace Aquarius.Services
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Agregar servicios al contenedor
+            // Servicios del Contenedor
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Configuración de Entity Framework con PostgreSQL
             builder.Services.AddDbContext<AquariusDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            // Inyección de Dependencias (Repositorios)
             builder.Services.AddScoped<IFarmRepository, FarmRepository>();
             builder.Services.AddScoped<IPondRepository, PondRepository>();
             builder.Services.AddScoped<ISensorRepository, SensorRepository>();
@@ -31,33 +33,39 @@ namespace Aquarius.Services
             {
                 options.AddPolicy("AllowAngularApp", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    policy.WithOrigins("http://localhost:4200") // URL de la app Angular
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Permite cookies o autenticación si es necesario
                 });
             });
 
+            // Construcción del Aplicativo
             var app = builder.Build();
 
-            // Middleware en el orden correcto
+            // Middleware
             if (app.Environment.IsDevelopment())
             {
+                // Documentación Swagger habilitada en entorno de desarrollo
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
+            // Redirección HTTPS (puedes comentar esto para desarrollo con HTTP)
             app.UseHttpsRedirection();
 
-            app.UseRouting(); // UseRouting primero
+            // Configuración de Routing y CORS
+            app.UseRouting(); // Routing
+            app.UseCors("AllowAngularApp"); // Aplicar política de CORS después de Routing
 
-            app.UseCors("AllowAngularApp"); // Aplicar CORS DESPUÉS de UseRouting
-
+            // Autorización
             app.UseAuthorization();
 
-            app.MapControllers(); // UseEndpoints está implícito aquí con MapControllers()
+            // Mapear Controladores
+            app.MapControllers();
 
+            // Ejecución de la Aplicación
             app.Run();
         }
     }
-
 }

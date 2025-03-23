@@ -1,0 +1,70 @@
+.alert-table-container {
+    margin: 20px;
+    padding: 20px;
+    border: 2px solid #cc0000; /* Rojo moderado */
+    border-radius: 10px;
+    background-color: #ffffff; /* Fondo blanco limpio */
+    box-shadow: 0 4px 8px rgba(204, 0, 0, 0.6); /* Sombra roja suave */
+  }
+  
+  .alert-table-container h2 {
+    text-align: center;
+    color: #cc0000; /* Título en rojo moderado */
+    font-family: 'Arial Black', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Verdana', sans-serif;
+  }
+  
+  table th {
+    background-color: #cc0000; /* Fondo rojo moderado */
+    color: #ffffff; /* Texto blanco para contraste */
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center; /* Centrar el texto */
+  }
+  
+  
+  table td {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    color: #333333; /* Gris oscuro para buen contraste */
+    border-bottom: 1px solid #dddddd; /* Líneas separadoras */
+  }
+  
+  /* Efecto de parpadeo para las filas */
+  tr {
+    animation: subtleBlink 2s infinite; /* Parpadeo suave */
+  }
+  
+  /* Definición de animación para el parpadeo */
+  @keyframes subtleBlink {
+    0% {
+      background-color: #ffeeee; /* Fondo rojo pálido */
+    }
+    50% {
+      background-color: #ffcccc; /* Fondo rojo más fuerte */
+    }
+    100% {
+      background-color: #ffeeee; /* Vuelve al rojo pálido */
+    }
+  }
+  
+  mat-paginator {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #444444; /* Neutral y legible */
+  }
+  
