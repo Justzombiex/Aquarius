@@ -7,7 +7,7 @@ import { Reading } from '../models/reading.model';
   providedIn: 'root'
 })
 export class ReadingService {
-  private apiUrl = 'https://localhost:5001/api/Readings';
+  private apiUrl = 'https://localhost:7185/api/Readings';
 
   constructor(private http: HttpClient) { }
 
