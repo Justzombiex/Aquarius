@@ -16,7 +16,7 @@ namespace Aquarius.Data
         /// <summary>
         /// Requerired by EntityFrameworkCore for migration.
         /// </summary>
-        protected AquariusDbContext()
+        public AquariusDbContext()
         {
         }
 

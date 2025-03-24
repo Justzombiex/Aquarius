@@ -2,6 +2,8 @@ using Aquarius.Data;
 using Aquarius.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Ports;
+using Aquarius.Services.Alerts;
+
 
 namespace Aquarius.Services
 {
@@ -59,7 +61,14 @@ namespace Aquarius.Services
 
             app.Run();
 
+            // Crear el contexto de la base de datos y el repositorio
+            var dbContext = new AquariusDbContext(); // Asegúrate de configurar tu DbContext correctamente
+            var alertRepository = new AlertRepository(dbContext);
 
+            // Crear instancias de las clases de alerta
+            TemperaturaBaja alertaTemperaturaBaja = new TemperaturaBaja(alertRepository);
+            TemperaturaAlta alertaTemperaturaAlta = new TemperaturaAlta(alertRepository);
+            FaltaDeAgua alertaFaltaDeAgua = new FaltaDeAgua(alertRepository);
 
             //Obtener los datos del Arduino
 
@@ -75,11 +84,11 @@ namespace Aquarius.Services
                 string data = serialPort.ReadLine();
 
                 // Procesar los datos recibidos
-                ProcesarDatos(data);
+                ProcesarDatos(data, alertaTemperaturaBaja, alertaTemperaturaAlta, alertaFaltaDeAgua);
             }
         }
 
-        static void ProcesarDatos(string data)
+        static void ProcesarDatos(string data, TemperaturaBaja alertaTemperaturaBaja,TemperaturaAlta alertaTemperaturaAlta, FaltaDeAgua alertaFaltaDeAgua)
         {
             // Dividir los datos en partes (temperatura y nivel)
             string[] partes = data.Split(',');
@@ -95,9 +104,13 @@ namespace Aquarius.Services
                     // Extraer el valor de nivel (bool)
                     string nivelStr = partes[1].Substring(2); // Eliminar "L:"
                     bool nivel = nivelStr == "1"; // Convertir "1" a true y "0" a false
-
-                    // Mostrar los valores en la consola
+                                                  // Mostrar los valores en la consola
                     Console.WriteLine($"Temperatura: {temperatura:F2} °C, Nivel: {nivel}");
+
+                    // Verificar alertas
+                    alertaTemperaturaBaja.Verificar(temperatura);
+                    alertaTemperaturaAlta.Verificar(temperatura);
+                    alertaFaltaDeAgua.Verificar(nivel);
                 }
                 catch (FormatException)
                 {
