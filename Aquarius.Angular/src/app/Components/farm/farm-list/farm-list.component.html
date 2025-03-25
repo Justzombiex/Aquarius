@@ -7,7 +7,7 @@
         Datos de la especie
       </button>
       <button mat-button (click)="selectOption('alert')">Alertas</button>
-      <button mat-button (click)="selectOption('sensor')">Sensor</button>
+      <button mat-button (click)="selectOption('variables')">Variables</button>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -52,9 +52,9 @@
         <mat-toolbar color="warn">Alertas</mat-toolbar>
         <app-alert-list></app-alert-list>
       </div>
-      <div *ngIf="selectedOption === 'sensor'">
+      <div *ngIf="selectedOption === 'variables'">
         <mat-toolbar color="warn">Datos de los sensores</mat-toolbar>
-        <app-reading-graph></app-reading-graph>
+        <dashboard></dashboard>
       </div>
     </div>
   </mat-sidenav-content>

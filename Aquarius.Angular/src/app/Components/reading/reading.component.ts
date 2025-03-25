@@ -23,9 +23,15 @@ export class ReadingGraphComponent implements OnInit {
     this.readingService.getReadings().subscribe({
       next: (data: Reading[]) => {
         const temperatureValues = data.map(reading => reading.value); // Extraemos los valores de temperatura
-        const timestamps = data.map(reading => new Date(reading.timestamp).toLocaleString()); // Extraemos las fechas
+        const timestamps = data.map(reading => 
+          new Date(reading.timestamp).toLocaleTimeString() // Extraemos únicamente la hora
+        );
 
-        this.renderLineChart(temperatureValues, timestamps); // Renderizamos el gráfico con líneas
+        const pointColors = temperatureValues.map(value => 
+          value > 35 ? 'rgba(255, 0, 0, 1)' : 'rgba(54, 162, 235, 1)' // Rojo si supera 35, azul oscuro si no
+        );
+
+        this.renderLineChart(temperatureValues, timestamps, pointColors); // Renderizamos el gráfico con lógica de colores
       },
       error: (err) => {
         console.error('Error al obtener lecturas:', err);
@@ -33,7 +39,7 @@ export class ReadingGraphComponent implements OnInit {
     });
   }
 
-  renderLineChart(temperatureValues: number[], timestamps: string[]): void {
+  renderLineChart(temperatureValues: number[], timestamps: string[], pointColors: string[]): void {
     this.chart = new Chart(this.chartCanvas.nativeElement, {
       type: 'line', // Tipo de gráfico: línea
       data: {
@@ -45,8 +51,10 @@ export class ReadingGraphComponent implements OnInit {
             backgroundColor: 'rgba(54, 162, 235, 0.2)', // Azul claro para el área
             borderColor: 'rgba(54, 162, 235, 1)', // Azul oscuro para las líneas
             borderWidth: 2, // Anchura de las líneas
-            pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Azul oscuro para los puntos
-            pointBorderColor: '#ffffff', // Blanco para los bordes de puntos
+            pointBackgroundColor: pointColors, // Color dinámico para los puntos
+            pointBorderColor: '#ffffff', // Blanco para bordes de los puntos
+            pointRadius: 6, // Tamaño de los puntos
+            pointHoverRadius: 8, // Tamaño más grande al pasar el mouse
             tension: 0.4, // Suaviza las líneas entre puntos
           },
         ],
@@ -61,14 +69,33 @@ export class ReadingGraphComponent implements OnInit {
           x: {
             title: {
               display: true,
-              text: 'Tiempo',
+              text: 'Hora',
+              color: '#004b6b', // Azul profundo
+              font: {
+                size: 16,
+                weight: 'bold',
+              },
+            },
+            ticks: {
+              color: '#0277bd', // Azul claro para las etiquetas
             },
           },
           y: {
-            beginAtZero: true, // Comienza en 0 el eje Y
+            beginAtZero: true,
             title: {
               display: true,
               text: 'Temperatura',
+              color: '#004b6b',
+              font: {
+                size: 16,
+                weight: 'bold',
+              },
+            },
+            ticks: {
+              color: '#0277bd',
+            },
+            grid: {
+              color: 'rgba(54, 162, 235, 0.2)', // Líneas del grid en azul traslúcido
             },
           },
         },

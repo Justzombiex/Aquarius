@@ -1,0 +1,32 @@
+/* General styles for mat-grid-list */
+.grid-container {
+    width: 100%; /* Asegura que ocupe todo el ancho */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    background: #f4f4f9; /* Fondo neutro */
+    margin: 0 auto; /* Centra la cuadrícula horizontalmente */
+    display: block; /* Asegura que sea visible */
+  }
+
+
+/* mat-grid-tile styling con degradado azul claro */
+mat-grid-tile {
+    display: flex; /* Flex para centrar contenido */
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #bbdefb, #e3f2fd); /* Azul claro degradado */
+    border: 1px solid rgba(0, 123, 255, 0.3); /* Bordes sutiles */
+    border-radius: 0; /* Esquinas rectas */
+  }
+  
+  
+  /* Styles for each custom element (3 and 4) */
+  .elemento {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #004b6b; /* Azul oscuro */
+    padding: 20px;
+    background: #ffffff; /* Fondo blanco limpio */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  }
+  

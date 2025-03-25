@@ -1,0 +1,148 @@
+/* Contenedor principal del tanque */
+.tanque-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 500px; /* Más ancho que alto */
+    margin: 0 auto;
+    padding: 20px;
+    background: #f7faff; /* Fondo azul muy claro */
+    border-radius: 20px; /* Bordes más suaves */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); /* Sombra más elegante */
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Título del estado */
+  .tanque-container h2 {
+    margin-bottom: 20px;
+    font-size: 2rem; /* Título más grande */
+    color: #004b6b; /* Azul oscuro para contraste */
+  }
+  
+  /* Tanque con fondo atractivo */
+  .tanque {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    height: 200px; /* Más ancho que alto */
+    border: 3px solid #004b6b; /* Azul oscuro para resaltar el borde */
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #b3d9ff, #80c4ff); /* Degradado azul claro */
+  }
+  
+  /* Agua con burbujas */
+  .agua {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(to top, #4da6ff, #80c4ff); /* Azul claro más vivo */
+    transition: height 0.5s ease-in-out; /* Transición suave */
+    border-top: 2px solid rgba(255, 255, 255, 0.5); /* Detalle sutil en la línea superior */
+    overflow: hidden;
+  }
+  
+  .burbujas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 10%, transparent 20%);
+    background-size: 15px 15px; /* Burbujas más visibles */
+    animation: burbujas 5s infinite;
+  }
+  
+  /* Animación de burbujas */
+  @keyframes burbujas {
+    0% {
+      background-position: 0px 0px;
+    }
+    100% {
+      background-position: 0px -150px; /* Movimiento más largo hacia arriba */
+    }
+  }
+  
+  /* Controles */
+  .controles {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 15px;
+  }
+  
+  .controles button {
+    padding: 10px 20px;
+    font-size: 1.2rem; /* Botones más grandes */
+    color: #ffffff;
+    background: #4da6ff; /* Azul vibrante */
+    border: none;
+    border-radius: 8px; /* Bordes suaves */
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .controles button:hover {
+    background: #004b6b; /* Azul más oscuro al pasar el mouse */
+  }
+  
+  /* Peces nadando dentro del tanque */
+.pez {
+    position: absolute;
+    bottom: 20%; /* Altura inicial del pez */
+    width: 50px; /* Tamaño del pez */
+    height: 25px;
+    background: linear-gradient(90deg, #ffa726, #fb8c00); /* Color vibrante del pez */
+    border-radius: 50%; /* Forma ovalada */
+    transform: rotateY(0deg);
+    animation: nadar 5s infinite linear, saltar 3s infinite ease-in-out;
+  }
+  
+  /* Cola del pez */
+  .pez::before {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 20px;
+    background: #fb8c00; /* Color de la cola */
+    border-radius: 50%;
+    top: 2px;
+    left: -15px;
+    transform-origin: center;
+    animation: moverCola 0.5s infinite;
+  }
+  
+  /* Animaciones */
+  
+  /* Movimiento horizontal del pez */
+  @keyframes nadar {
+    0% {
+      left: -10%; /* Fuera del tanque */
+      transform: rotateY(0deg); /* Mirando hacia la derecha */
+    }
+    50% {
+      left: 80%; /* Cruza el tanque */
+    }
+    100% {
+      left: -10%; /* Regresa al inicio */
+      transform: rotateY(180deg); /* Cambia de dirección */
+    }
+  }
+  
+  /* Movimiento ondulante del pez */
+  @keyframes saltar {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px); /* Salto sutil */
+    }
+  }
+  
+  /* Movimiento de la cola del pez */
+  @keyframes moverCola {
+    0%, 100% {
+      transform: rotate(20deg); /* Movimiento hacia un lado */
+    }
+    50% {
+      transform: rotate(-20deg); /* Movimiento hacia el otro lado */
+    }
+  }  

@@ -1,0 +1,19 @@
+<div class="tanque-container">
+    <h2>Nivel del Estanque</h2>
+    <div class="tanque">
+      <!-- Agua con burbujas -->
+      <div class="agua" [style.height.%]="nivelAgua">
+        <div class="burbujas"></div>
+        <!-- Peces nadando -->
+        <div class="pez"></div>
+        <div class="pez" style="animation-delay: 1s; bottom: 30%;"></div>
+        <div class="pez" style="animation-delay: 2s; bottom: 50%;"></div>
+      </div>
+    </div>
+    <div class="controles">
+      <button (click)="cambiarNivel(100)">Llenar</button>
+      <button (click)="cambiarNivel(50)">Mitad</button>
+      <button (click)="cambiarNivel(0)">Vaciar</button>
+    </div>
+  </div>
+  
