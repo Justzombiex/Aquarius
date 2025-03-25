@@ -19,9 +19,6 @@ namespace Aquarius.Data.Configurations
             builder.Property(a => a.TimeStamp)
                    .IsRequired();
 
-            builder.Property(a => a.VariableType)
-                   .IsRequired();
-
             // Relación muchos a uno con Pond
             builder.HasOne(a => a.Pond)
                    .WithMany()

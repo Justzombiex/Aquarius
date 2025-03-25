@@ -29,7 +29,7 @@ namespace Aquarius.Services
 
             builder.Services.AddScoped<IFarmRepository, FarmRepository>();
             builder.Services.AddScoped<IPondRepository, PondRepository>();
-            builder.Services.AddScoped<ISensorRepository, SensorRepository>();
+            builder.Services.AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>();
             builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
             builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
@@ -68,11 +68,16 @@ namespace Aquarius.Services
             // Crear el contexto de la base de datos y el repositorio
             var dbContext = new AquariusDbContext(); // Asegúrate de configurar tu DbContext correctamente
             var alertRepository = new AlertRepository(dbContext);
+            var builders = WebApplication.CreateBuilder(args);
+            IConfiguration configuration = builder.Configuration;
+
+            var emailService = new EmailService(configuration);
+
 
             // Crear instancias de las clases de alerta
-            TemperaturaBaja alertaTemperaturaBaja = new TemperaturaBaja(alertRepository);
-            TemperaturaAlta alertaTemperaturaAlta = new TemperaturaAlta(alertRepository);
-            FaltaDeAgua alertaFaltaDeAgua = new FaltaDeAgua(alertRepository);
+            LowTemperature alertaTemperaturaBaja = new LowTemperature(alertRepository, emailService);
+            HighTemperature alertaTemperaturaAlta = new HighTemperature(alertRepository, emailService);
+            WaterLevelAlert alertaFaltaDeAgua = new WaterLevelAlert(alertRepository, emailService);
 
             //Obtener los datos del Arduino
 
@@ -92,7 +97,7 @@ namespace Aquarius.Services
             }
         }
 
-        static void ProcesarDatos(string data, TemperaturaBaja alertaTemperaturaBaja,TemperaturaAlta alertaTemperaturaAlta, FaltaDeAgua alertaFaltaDeAgua)
+        static void ProcesarDatos(string data, LowTemperature alertaTemperaturaBaja,HighTemperature alertaTemperaturaAlta, WaterLevelAlert alertaFaltaDeAgua)
         {
             // Dividir los datos en partes (temperatura y nivel)
             string[] partes = data.Split(',');

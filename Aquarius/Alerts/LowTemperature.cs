@@ -4,22 +4,24 @@ using Aquarius.Services.Services;
 
 namespace Aquarius.Services.Alerts
 {
-    public class FaltaDeAgua
+    public class LowTemperature
     {
+        private const float TemperaturaMuyBaja = 10.0f;
         private readonly AlertRepository _alertRepository;
         private readonly EmailService _emailService;
 
-        public FaltaDeAgua(AlertRepository alertRepository, EmailService emailService)
+
+        public LowTemperature(AlertRepository alertRepository, EmailService emailService)
         {
             _alertRepository = alertRepository ?? throw new ArgumentNullException(nameof(alertRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
-        public async Task Verificar(bool nivel)
+        public async Task Verificar(float temperatura)
         {
-            if (!nivel) // Si el nivel es false (0), falta agua
+            if (temperatura < TemperaturaMuyBaja)
             {
-                string mensaje = "¡ALERTA! Falta agua.";
+                string mensaje = $"¡ALERTA! Temperatura muy baja: {temperatura:F2} °C";
                 Console.WriteLine(mensaje);
 
                 // Crear y guardar la alerta en la base de datos
@@ -28,12 +30,11 @@ namespace Aquarius.Services.Alerts
                     Id = Guid.NewGuid(),
                     Message = mensaje,
                     TimeStamp = DateTime.UtcNow,
-                    VariableType = VariableType.Level // Tipo de variable
                 };
 
                 await _alertRepository.AddAsync(alerta);
                 // Enviar correo electrónico
-                _emailService.SendEmail("andyternblom@gmail.com", "Alerta de Falta de Agua", mensaje);
+                _emailService.SendEmail("andyternblom@gmail.com", "Alerta de Temperatura Baja", mensaje);
             }
         }
     }
