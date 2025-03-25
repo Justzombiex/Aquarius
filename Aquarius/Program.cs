@@ -3,6 +3,7 @@ using Aquarius.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Ports;
 using Aquarius.Services.Alerts;
+using Aquarius.Services.Services;
 
 
 namespace Aquarius.Services
@@ -17,6 +18,9 @@ namespace Aquarius.Services
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Registrar el servicio de correo
+            builder.Services.AddSingleton<EmailService>();
 
             builder.Services.AddDbContext<AquariusDbContext>(options =>
             {

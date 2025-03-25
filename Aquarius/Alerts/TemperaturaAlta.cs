@@ -1,5 +1,6 @@
 ﻿using Aquarius.Data.Repositories;
 using Aquarius.Domain;
+using Aquarius.Services.Services;
 
 namespace Aquarius.Services.Alerts
 {
@@ -7,12 +8,13 @@ namespace Aquarius.Services.Alerts
     {
         private const float TemperaturaMuyAlta = 40.0f;
         private readonly AlertRepository _alertRepository;
-        
+        private readonly EmailService _emailService;
 
-        public TemperaturaAlta(AlertRepository alertRepository)
+
+        public TemperaturaAlta(AlertRepository alertRepository, EmailService emailService)
         {
             _alertRepository = alertRepository ?? throw new ArgumentNullException(nameof(alertRepository));
-           
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public async Task Verificar(float temperatura)
@@ -32,6 +34,8 @@ namespace Aquarius.Services.Alerts
                 };
 
                 await _alertRepository.AddAsync(alerta);
+                // Enviar correo electrónico
+                _emailService.SendEmail("andyternblom@gmail.com", "Alerta de Temperatura Alta", mensaje);
             }
         }
     }

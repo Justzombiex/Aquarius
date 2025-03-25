@@ -1,17 +1,18 @@
 ﻿using Aquarius.Data.Repositories;
 using Aquarius.Domain;
+using Aquarius.Services.Services;
 
 namespace Aquarius.Services.Alerts
 {
     public class FaltaDeAgua
     {
         private readonly AlertRepository _alertRepository;
-        
+        private readonly EmailService _emailService;
 
-        public FaltaDeAgua(AlertRepository alertRepository)
+        public FaltaDeAgua(AlertRepository alertRepository, EmailService emailService)
         {
             _alertRepository = alertRepository ?? throw new ArgumentNullException(nameof(alertRepository));
-            
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public async Task Verificar(bool nivel)
@@ -31,6 +32,8 @@ namespace Aquarius.Services.Alerts
                 };
 
                 await _alertRepository.AddAsync(alerta);
+                // Enviar correo electrónico
+                _emailService.SendEmail("andyternblom@gmail.com", "Alerta de Falta de Agua", mensaje);
             }
         }
     }
