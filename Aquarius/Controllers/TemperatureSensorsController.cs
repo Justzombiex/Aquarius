@@ -6,65 +6,65 @@ namespace Aquarius.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TemperatureSensorsController : ControllerBase
+    public class LevelSensorsController : ControllerBase
     {
-        private readonly ITemperatureSensorRepository _temperatureSensorRepository;
+        private readonly ILevelSensorRepository _levelSensorRepository;
 
-        public TemperatureSensorsController(ITemperatureSensorRepository temperaturesensorRepository)
+        public LevelSensorsController(ILevelSensorRepository levelSensorRepository)
         {
-            _temperatureSensorRepository = temperaturesensorRepository;
+            _levelSensorRepository = levelSensorRepository;
         }
 
-        // GET: api/TemperatureSensors
+        // GET: api/LevelSensors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TemperatureSensor>>> GetTemperatureSensors()
+        public async Task<ActionResult<IEnumerable<LevelSensor>>> GetLevelSensors()
         {
-            return Ok(await _temperatureSensorRepository.GetAllAsync());
+            return Ok(await _levelSensorRepository.GetAllAsync());
         }
 
-        // GET: api/TemperatureSensors/{id}
+        // GET: api/LevelSensors/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<TemperatureSensor>> GetTemperatureSensor(Guid id)
+        public async Task<ActionResult<LevelSensor>> GetLevelSensor(Guid id)
         {
-            var temperaturesensor = await _temperatureSensorRepository.GetByIdAsync(id);
-            if (temperaturesensor == null)
+            var levelSensor = await _levelSensorRepository.GetByIdAsync(id);
+            if (levelSensor == null)
             {
                 return NotFound();
             }
-            return Ok(temperaturesensor);
+            return Ok(levelSensor);
         }
 
-        // POST: api/TemperatureSensors
+        // POST: api/LevelSensors
         [HttpPost]
-        public async Task<ActionResult<TemperatureSensor>> CreateTemperatureSensor([FromBody] TemperatureSensor temperaturesensor)
+        public async Task<ActionResult<LevelSensor>> CreateLevelSensor([FromBody] LevelSensor levelSensor)
         {
-            if (temperaturesensor == null)
+            if (levelSensor == null)
             {
                 return BadRequest();
             }
 
-            await _temperatureSensorRepository.AddAsync(temperaturesensor);
-            return CreatedAtAction(nameof(GetTemperatureSensor), new { id = temperaturesensor.Id }, temperaturesensor);
+            await _levelSensorRepository.AddAsync(levelSensor);
+            return CreatedAtAction(nameof(GetLevelSensor), new { id = levelSensor.Id }, levelSensor);
         }
 
-        // PUT: api/TemperatureSensors/{id}
+        // PUT: api/LevelSensors/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTemperatureSensor(Guid id, [FromBody] TemperatureSensor temperaturesensor)
+        public async Task<IActionResult> UpdateLevelSensor(Guid id, [FromBody] LevelSensor levelSensor)
         {
-            if (id != temperaturesensor.Id)
+            if (id != levelSensor.Id)
             {
                 return BadRequest();
             }
 
-            await _temperatureSensorRepository.UpdateAsync(temperaturesensor);
+            await _levelSensorRepository.UpdateAsync(levelSensor);
             return NoContent();
         }
 
-        // DELETE: api/TemperatureSensors/{id}
+        // DELETE: api/LevelSensors/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTemperatureSensor(Guid id)
+        public async Task<IActionResult> DeleteLevelSensor(Guid id)
         {
-            await _temperatureSensorRepository.DeleteAsync(id);
+            await _levelSensorRepository.DeleteAsync(id);
             return NoContent();
         }
     }
