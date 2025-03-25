@@ -1,0 +1,219 @@
+.alert-container {
+  max-width: 900px;
+  margin: 20px 0; /* Eliminamos el auto para quitar el centrado */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Asegura alineación izquierda */
+  gap: 20px;
+}
+
+.alert-container h2 {
+  color: #1976d2;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: left; /* Alineación a la izquierda */
+  width: 100%;
+}
+
+.alert-wrapper {
+  display: flex;
+  align-items: center;
+  width: auto; /* Cambiado de 100% a auto para no estirar */
+  justify-content: flex-start; /* Alinea el contenido a la izquierda */
+}
+
+.alert-card {
+  width: 500px; /* Ancho fijo para mejor control */
+  min-height: 110px;
+  border-radius: 10px;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  margin-right: auto; /* Empuja todo a la izquierda */
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.icon-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 8px;
+}
+
+.alert-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+}
+
+mat-card-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+}
+
+mat-card-content p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #555;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-left: 15px;
+  min-width: 110px; /* Reducido para botón más pequeño */
+}
+
+.acknowledge-btn {
+  background-color: #1976d2;
+  color: white !important;
+  border-radius: 18px;
+  padding: 0 12px;
+  height: 32px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* Botón de activar manualmente más pequeño */
+.manual-activate-btn {
+  background-color: #6c757d;
+  color: white !important;
+  border-radius: 18px;
+  padding: 0 8px; /* Más compacto */
+  height: 28px; /* Más pequeño */
+  font-size: 12px; /* Texto más pequeño */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.manual-activate-btn mat-icon {
+  font-size: 14px; /* Icono más pequeño */
+  margin-right: 4px;
+}
+
+.status-light {
+  width: 40px;              /* Más grande (antes 25px) */
+  height: 40px;             /* Más grande (antes 25px) */
+  border-radius: 50%;
+  margin-left: 20px;        /* Más espacio */
+  box-shadow: 0 0 20px;     /* Sombra más pronunciada */
+  position: relative;       /* Para el efecto de brillo */
+}
+
+/* Luz activa - Animación más rápida y vistosa */
+.status-light.active {
+  background-color: #ff4444; /* Rojo más vibrante */
+  box-shadow: 0 0 25px #ff0000; /* Sombra roja intensa */
+  animation: vividBlink 0.8s infinite ease-in-out; /* Más rápido (antes 1.5s) */
+}
+
+/* Luz inactiva - Más brillante */
+.status-light.inactive {
+  background-color: #66ff66; /* Verde más brillante */
+  box-shadow: 0 0 25px #00ff00; /* Sombra verde intensa */
+}
+
+.status-light::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, 
+              rgba(255,255,255,0.8) 0%, 
+              rgba(255,255,255,0) 70%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Botón Mostrar Alarmas con fondo */
+.show-alerts-btn {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 24px;
+  padding: 8px 24px;
+  background-color: #1976d2; /* Fondo azul */
+  color: white !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.show-alerts-btn:hover {
+  background-color: #1565c0; /* Azul más oscuro al hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.show-alerts-btn:active {
+  background-color: #0d47a1; /* Azul más intenso al hacer clic */
+  transform: scale(0.98);
+}
+
+.show-alerts-btn mat-icon {
+  font-size: 20px;
+}
+
+/* Estilos de estado */
+.alert-card.high-temp {
+  background-color: #ffebee;
+  border-left: 6px solid #f44336;
+}
+
+.alert-card.low-temp {
+  background-color: #e3f2fd;
+  border-left: 6px solid #2196f3;
+}
+
+.alert-card.disconnection {
+  background-color: #fff3e0;
+  border-left: 6px solid #ff9800;
+}
+
+.alert-card.acknowledged {
+  background-color: #e8f5e9;
+  border-left: 6px solid #4caf50;
+}
+
+.alert-card.high-temp .alert-icon {
+  color: #f44336;
+}
+
+.alert-card.low-temp .alert-icon {
+  color: #2196f3;
+}
+
+.alert-card.disconnection .alert-icon {
+  color: #ff9800;
+}
+
+.alert-card.acknowledged .alert-icon {
+  color: #4caf50;
+}
+
+@keyframes vividBlink {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 30px #ff0000; 
+  }
+  50% { 
+    transform: scale(1.2);          /* Escala más grande */
+    opacity: 0.8;
+    box-shadow: 0 0 50px #ff0000;   /* Sombra más grande */
+  }
+}

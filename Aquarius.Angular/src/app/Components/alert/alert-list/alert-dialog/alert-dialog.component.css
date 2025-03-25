@@ -68,3 +68,17 @@
     color: #444444; /* Neutral y legible */
   }
   
+  h2 {
+    font-size: 18px; /* Reduce el tamaño del encabezado */
+    margin-bottom: 10px; /* Espaciado inferior reducido */
+  }
+  
+  table {
+    font-size: 14px; /* Reduce el tamaño de fuente de la tabla */
+  }
+  
+  button {
+    padding: 8px 16px; /* Botón más pequeño */
+    font-size: 14px; /* Fuente del botón más pequeña */
+  }
+  
