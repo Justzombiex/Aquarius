@@ -5,14 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import { FarmService } from '../../../services/farm.service';
-import { Farm } from '../../../models/farm.model';
-import { signal } from '@angular/core';
+import { AlertListComponent } from "../../alert/alert-list/alert.list.component";
+import { DashBoard } from "../../dashboard/dashboard";
 
 @Component({
   selector: 'app-farm-list',
@@ -26,9 +26,12 @@ import { signal } from '@angular/core';
     MatListModule,
     MatToolbarModule,
     MatExpansionModule,
-  ],
+    AlertListComponent,
+    DashBoard
+],
   templateUrl: './farm-list.component.html',
   styleUrls: ['./farm-list.component.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FarmListComponent {
   selectedOption: string | null = null;

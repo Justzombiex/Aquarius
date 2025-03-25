@@ -1,36 +1,215 @@
+/* Importación de fuentes elegantes */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&family=Raleway:wght@400;600&display=swap');
+
+/* Contenedor principal */
 .sidenav-container {
   height: 100vh;
-  background-color: #e3f2fd; /* Azul claro como fondo */
+  background: linear-gradient(135deg, #e3f2fd, #b3e5fc); /* Degradado azul claro */
+  font-family: 'Raleway', sans-serif; /* Fuente elegante */
 }
 
+/* Barra superior */
 mat-toolbar {
-  background-color: #0288d1; /* Azul profundo para el toolbar */
-  color: #ffffff; /* Texto blanco para contraste */
-  font-size: 20px;
-  font-weight: bold;
+  background: linear-gradient(90deg, #0288d1, #01579b); /* Degradado azul profundo */
+  color: #ffffff; /* Texto blanco */
+  font-size: 26px; /* Títulos grandes */
+  font-weight: 600; /* Negrita */
+  font-family: 'Poppins', sans-serif; /* Fuente moderna */
+  text-transform: uppercase; /* Texto en mayúsculas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra elegante */
 }
 
+/* Menú lateral */
 mat-nav-list {
-  background-color: #b3e5fc; /* Azul suave */
-  padding: 8px;
-}
-
-button[mat-button] {
-  width: 100%; /* Que ocupe todo el ancho */
-  text-align: left; /* Alineación del texto */
-  color: #212121; /* Letras negras */
   background-color: #81d4fa; /* Azul pastel */
-  border-radius: 4px; /* Bordes redondeados */
-  font-size: 16px; /* Tamaño de letra */
-  margin: 8px 0; /* Espaciado entre botones */
-  padding: 8px 12px; /* Relleno interno */
+  padding: 10px;
+  border: 1px solid #0288d1; /* Bordes definidos */
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif; /* Fuente limpia */
+  font-size: 18px; /* Letra un poco más grande */
 }
 
+/* Botones del menú */
+button[mat-button] {
+  width: 100%; /* Tamaño completo */
+  text-align: left; /* Texto alineado a la izquierda */
+  color: #ffffff; /* Letras blancas */
+  background: linear-gradient(135deg, #0288d1, #81d4fa); /* Degradado azul */
+  border-radius: 5px; /* Bordes ligeramente redondeados */
+  font-size: 20px; /* Tamaño de letra más grande */
+  font-family: 'Raleway', sans-serif; /* Fuente sofisticada */
+  margin: 10px 0; /* Espaciado entre botones */
+  padding: 12px; /* Relleno interno */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra ligera */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto hover */
 button[mat-button]:hover {
-  background-color: #0288d1; /* Azul más fuerte al pasar el ratón */
-  color: #ffffff; /* Texto blanco al hacer hover */
+  background: linear-gradient(135deg, #01579b, #0288d1); /* Azul más intenso */
+  color: #ffffff; /* Letras blancas */
+  transform: translateY(-2px); /* Mueve el botón hacia arriba */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada */
 }
 
-button[mat-button]:active {
-  background-color: #01579b; /* Azul aún más oscuro cuando se presiona */
+/* Contenedor de imágenes */
+.image-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Ajusta las imágenes si hay demasiadas */
+  background: linear-gradient(135deg, #f1f8e9, #aed581); /* Degradado verde claro */
+  padding: 20px;
+  border: 1px solid #81c784; /* Bordes verdes suaves */
+  border-radius: 10px;
+}
+
+/* Imágenes */
+.tilapia-image {
+  width: auto;
+  max-width: 320px;
+  height: auto;
+  max-height: 220px;
+  border-radius: 12px;
+  object-fit: contain; /* Mantener proporción */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Sombra envolvente */
+  transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+/* Hover en imágenes */
+.tilapia-image:hover {
+  transform: scale(1.1); /* Efecto de ampliación */
+  filter: brightness(1.15); /* Brillo aumentado */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6); /* Sombra intensa */
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tilapia-image {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Texto flotante sobre imágenes */
+.image-container p {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 22px; /* Texto más grande */
+  font-weight: bold;
+  font-family: 'Poppins', sans-serif; /* Fuente moderna */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6); /* Sombras suaves */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.image-container:hover p {
+  opacity: 1; /* Efecto de aparición */
+}
+
+/* Contenedor del gráfico */
+.graph-container {
+  margin: 30px auto; /* Centra el contenedor */
+  padding: 20px;
+  border-radius: 15px; /* Bordes redondeados */
+  background: linear-gradient(135deg, #f3f4f7, #e3e4f0); /* Fondo con gradiente suave */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Sombra elegante */
+  max-width: 900px; /* Limita el ancho */
+  text-align: center;
+}
+
+.graph-container h2 {
+  color: #5a5a8b; /* Azul grisáceo */
+  font-family: 'Raleway', sans-serif; /* Fuente elegante */
+  font-size: 28px; /* Tamaño destacado */
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombras en el texto */
+  margin-bottom: 20px;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%; /* Ajusta el ancho */
+  height: 450px; /* Ajusta la altura */
+  overflow: hidden; /* Oculta cualquier contenido desbordante */
+  border: 2px solid rgba(54, 162, 235, 0.3); /* Borde azul suave */
+  border-radius: 10px; /* Esquinas redondeadas */
+}
+
+canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  box-shadow: 0 6px 12px rgba(54, 162, 235, 0.3), 0 0 8px rgba(255, 255, 255, 0.4); /* Sombras dinámicas */
+  border-radius: 10px; /* Aplica redondeo al canvas */
+}
+
+.species-info {
+  background-color: #f9f9f9; /* Fondo suave */
+  border: 2px solid #ddd; /* Borde tenue */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 30px; /* Incrementar el espaciado interno */
+  max-width: 80%; /* Limitar el ancho al 80% de la pantalla */
+  margin: 20px auto; /* Márgenes superior/inferior y centrado horizontal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para profundidad */
+  font-family: 'Arial', sans-serif; /* Fuente general */
+}
+
+.species-info h2 {
+  font-size: 28px;
+  color: #2c3e50; /* Color del título */
+  margin-bottom: 15px; /* Separación del título respecto al contenido */
+  text-align: center; /* Centrar el título */
+}
+
+.species-info p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #4a4a4a;
+  text-align: justify;
+  margin-bottom: 20px; /* Espaciado entre el párrafo y los elementos siguientes */
+}
+
+.species-info h3 {
+  font-size: 22px;
+  margin-top: 20px;
+  margin-bottom: 15px; /* Espaciado entre el subtítulo y el contenido */
+  color: #34495e;
+}
+
+.species-info ul {
+  list-style: none; /* Eliminar estilo de viñetas predeterminado */
+  padding-left: 0; /* Sin sangría en las listas */
+  margin-top: 10px;
+}
+
+.species-info ul li {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 12px; /* Separar elementos de la lista */
+  position: relative;
+}
+
+.species-info ul li:before {
+  content: "•"; /* Viñeta personalizada */
+  color: #3498db; /* Color de las viñetas */
+  font-weight: bold;
+  display: inline-block;
+  width: 20px;
+  margin-left: -20px; /* Posición de la viñeta */
 }

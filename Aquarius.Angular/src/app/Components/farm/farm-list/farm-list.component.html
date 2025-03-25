@@ -3,9 +3,18 @@
   <mat-sidenav mode="side" opened>
     <mat-toolbar color="primary">Granjas</mat-toolbar>
     <mat-nav-list>
-      <button mat-button (click)="selectOption('tilapia')">Datos de la especie</button>
+      <button mat-button (click)="selectOption('tilapia')">
+        Datos de la especie
+      </button>
+      <button mat-button (click)="selectOption('variables')">Variables</button>
       <button mat-button (click)="selectOption('alert')">Alertas</button>
-      <button mat-button (click)="selectOption('sensor')">Sensor</button>
+      <button mat-button (click)="selectOption('costo')">Costo</button>
+      <button mat-button (click)="selectOption('configuracion')">
+        Configuración
+      </button>
+      <button mat-button (click)="selectOption('estadisticas')">
+        Informe y estadísticas
+      </button>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -27,17 +36,64 @@
             <li>pH del agua: Rango óptimo entre 6.5 y 8.5.</li>
             <li>Salinidad: Puede tolerar agua dulce y salobre.</li>
             <li>
-              Alimentación: Dieta rica en proteínas basada en pellets y
-              vegetación.
+              Alimentación: Dieta rica en proteínas basada en pellets y vegetación.
             </li>
+          </ul>
+          <!-- Contenedor para las imágenes -->
+          <div style="display: flex; gap: 10px; margin-top: 20px">
+            <img src="assets/tilapia1.jpg" alt="Tilapia 1" class="tilapia-image" />
+            <img src="assets/tilapia2.jpg" alt="Tilapia 2" class="tilapia-image" />
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="selectedOption === 'variables'">
+        <mat-toolbar color="warn">Datos de los sensores</mat-toolbar>
+        <dashboard></dashboard>
+      </div>
+      <div *ngIf="selectedOption === 'alert'">
+        <mat-toolbar color="warn">Alertas</mat-toolbar>
+        <app-alert-list></app-alert-list>
+      </div>
+      <div *ngIf="selectedOption === 'costo'">
+        <mat-toolbar color="primary">Costo del Proyecto</mat-toolbar>
+        <div class="cost-info">
+          <!-- Contenido del costo -->
+        </div>
+      </div>
+      <div *ngIf="selectedOption === 'configuracion'">
+        <mat-toolbar color="primary">Configuración</mat-toolbar>
+        <div class="settings-info">
+          <h2>Configuración</h2>
+          <p>
+            Ajusta los parámetros generales de la granja, como temperatura,
+            pH, salinidad, y alertas personalizadas.
+          </p>
+          <h3>Opciones:</h3>
+          <ul>
+            <li>Temperatura óptima: xxxx</li>
+            <li>pH recomendado: xxxx</li>
+            <li>Alertas personalizadas: xxxx</li>
           </ul>
         </div>
       </div>
-      <div *ngIf="selectedOption === 'alert'">
-        <mat-toolbar color="warn">Alertas</mat-toolbar>      
-      </div>
-      <div *ngIf="selectedOption === 'sensor'">
-        <mat-toolbar color="warn">Datos de los sensores</mat-toolbar>
+      <div *ngIf="selectedOption === 'estadisticas'">
+        <mat-toolbar color="accent">Informe y estadísticas</mat-toolbar>
+        <div class="statistics-info">
+          <h2>Informe y estadísticas</h2>
+          <p>
+            Visualiza datos históricos y análisis de rendimiento de la granja.
+          </p>
+          <h3>Gráficos:</h3>
+          <ul>
+            <li>Producción mensual</li>
+            <li>Consumo de alimentación</li>
+            <li>Condiciones del agua</li>
+          </ul>
+          <div style="margin-top: 20px">
+            <img src="assets/performance-graph.jpg" alt="Gráfico de rendimiento" />
+          </div>
+        </div>
       </div>
     </div>
   </mat-sidenav-content>

@@ -14,10 +14,11 @@ namespace Aquarius.Services
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Agregar servicios al contenedor
+            // Servicios del Contenedor
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
 
             // Registrar el servicio de correo
             builder.Services.AddSingleton<EmailService>();
@@ -27,46 +28,54 @@ namespace Aquarius.Services
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            // Inyecci√≥n de Dependencias (Repositorios)
             builder.Services.AddScoped<IFarmRepository, FarmRepository>();
             builder.Services.AddScoped<IPondRepository, PondRepository>();
             builder.Services.AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>();
             builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
             builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
-            // ConfiguraciÛn de CORS
+            // Configuraci√≥n de CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngularApp", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    policy.WithOrigins("http://localhost:4200") // URL de la app Angular
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Permite cookies o autenticaci√≥n si es necesario
                 });
             });
 
+            // Construcci√≥n del Aplicativo
             var app = builder.Build();
 
-            // Middleware en el orden correcto
+            // Middleware
             if (app.Environment.IsDevelopment())
             {
+                // Documentaci√≥n Swagger habilitada en entorno de desarrollo
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
+            // Redirecci√≥n HTTPS (puedes comentar esto para desarrollo con HTTP)
             app.UseHttpsRedirection();
 
-            app.UseRouting(); // UseRouting primero
+            // Configuraci√≥n de Routing y CORS
+            app.UseRouting(); // Routing
+            app.UseCors("AllowAngularApp"); // Aplicar pol√≠tica de CORS despu√©s de Routing
 
-            app.UseCors("AllowAngularApp"); // Aplicar CORS DESPU…S de UseRouting
-
+            // Autorizaci√≥n
             app.UseAuthorization();
 
-            app.MapControllers(); // UseEndpoints est· implÌcito aquÌ con MapControllers()
+            // Mapear Controladores
+            app.MapControllers();
 
+            // Ejecuci√≥n de la Aplicaci√≥n
             app.Run();
 
             // Crear el contexto de la base de datos y el repositorio
-            var dbContext = new AquariusDbContext(); // Aseg˙rate de configurar tu DbContext correctamente
+            var dbContext = new AquariusDbContext(); // Aseg√∫rate de configurar tu DbContext correctamente
             var alertRepository = new AlertRepository(dbContext);
             var builders = WebApplication.CreateBuilder(args);
             IConfiguration configuration = builder.Configuration;
@@ -89,7 +98,7 @@ namespace Aquarius.Services
 
             while (true)
             {
-                // Leer una lÌnea de datos desde el puerto serial
+                // Leer una l√≠nea de datos desde el puerto serial
                 string data = serialPort.ReadLine();
 
                 // Procesar los datos recibidos
@@ -114,7 +123,7 @@ namespace Aquarius.Services
                     string nivelStr = partes[1].Substring(2); // Eliminar "L:"
                     bool nivel = nivelStr == "1"; // Convertir "1" a true y "0" a false
                                                   // Mostrar los valores en la consola
-                    Console.WriteLine($"Temperatura: {temperatura:F2} ∞C, Nivel: {nivel}");
+                    Console.WriteLine($"Temperatura: {temperatura:F2} ¬∞C, Nivel: {nivel}");
 
                     // Verificar alertas
                     alertaTemperaturaBaja.Verificar(temperatura);
@@ -132,5 +141,4 @@ namespace Aquarius.Services
             }
         }
     }
-
 }

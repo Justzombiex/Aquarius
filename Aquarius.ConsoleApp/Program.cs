@@ -1,5 +1,9 @@
-﻿using Aquarius.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Aquarius.Data.Repositories;
+using Aquarius.Data;
 using Aquarius.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +22,7 @@ namespace Aquarius.ConsoleApp
                 .AddScoped<IPondRepository, PondRepository>()
                 .AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>()
                 .AddScoped<IReadingRepository, ReadingRepository>()
+                .AddScoped<IAlertRepository, AlertRepository>()
                 .BuildServiceProvider();
 
             // Obtener el DbContext
@@ -33,37 +38,29 @@ namespace Aquarius.ConsoleApp
                 var pondRepository = scope.ServiceProvider.GetRequiredService<IPondRepository>();
                 var sensorRepository = scope.ServiceProvider.GetRequiredService<ITemperatureSensorRepository>();
                 var readingRepository = scope.ServiceProvider.GetRequiredService<IReadingRepository>();
+                var alertRepository = scope.ServiceProvider.GetRequiredService<IAlertRepository>();
 
-                // Agregar datos de ejemplo si la base de datos está vacía
+                // Crear datos iniciales si no existen
                 if (!(await farmRepository.GetAllAsync()).Any())
                 {
                     Console.WriteLine("Creando datos de ejemplo...");
 
-                    // Crear una granja
-                    var farm = new Farm
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Granja Principal",
-                        Location = "Ubicación A"
-                    };
+                    // Crear granja, estanque y sensor
+                    var farm = new Farm { Id = Guid.NewGuid(), Name = "Granja Principal", Location = "Ubicación A" };
                     await farmRepository.AddAsync(farm);
 
-                    // Crear un estanque
-                    var pond = new Pond
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Estanque 1",
-                        Capacity = 1000,
-                        FarmId = farm.Id
-                    };
+                    var pond = new Pond { Id = Guid.NewGuid(), Name = "Estanque 1", Capacity = 1000, FarmId = farm.Id };
                     await pondRepository.AddAsync(pond);
+
 
                     // Crear sensores
                     var temperatureSensor = new TemperatureSensor
+
                     {
                         Id = Guid.NewGuid(),
                         PondId = pond.Id
                     };
+
                     var tempSensor = new TemperatureSensor
                     {
                         Id = Guid.NewGuid(),
@@ -72,16 +69,52 @@ namespace Aquarius.ConsoleApp
                     await sensorRepository.AddAsync(temperatureSensor);
                     await sensorRepository.AddAsync(tempSensor);
 
-                    // Crear lecturas
-                    var temperatureReading = new Reading
+
+                    // Generar lecturas aleatorias de temperatura
+                    var random = new Random();
+                    var temperatureReadings = new List<Reading>();
+
+                    for (int i = 0; i < 15; i++)
                     {
-                        Id = Guid.NewGuid(),
-                        Value = 28.5,
-                        Timestamp = DateTime.UtcNow,
-                        SensorId = temperatureSensor.Id
-                    };
-                    var levelReading = new Reading
+                        // Generar una temperatura aleatoria entre 25.0 y 40.0
+                        double temp = Math.Round(random.NextDouble() * (40.0 - 25.0) + 25.0, 2);
+                        var reading = new Reading
+                        {
+                            Id = Guid.NewGuid(),
+                            Value = temp,
+                            Timestamp = DateTime.UtcNow.AddMinutes(-15 + i),
+                            SensorId = temperatureSensor.Id
+                        };
+                        temperatureReadings.Add(reading);
+
+                        // Crear alertas si el valor es crítico
+                        if (temp > 30.0)
+                        {
+                            var alert1 = new Alert(
+                                "Alta temperatura detectada!",
+                                VariableType.Temperature,
+                                reading.Timestamp,
+                                pond
+                            );
+                            await alertRepository.AddAsync(alert1);
+
+                            if (temp > 35.0)
+                            {
+                                var alert2 = new Alert(
+                                    "Temperatura extremadamente alta detectada!",
+                                    VariableType.Temperature,
+                                    reading.Timestamp,
+                                    pond
+                                );
+                                await alertRepository.AddAsync(alert2);
+                            }
+                        }
+                    }
+
+                    // Guardar lecturas y alertas en la base de datos
+                    foreach (var reading in temperatureReadings)
                     {
+
                         Id = Guid.NewGuid(),
                         Value = 75.0,
                         Timestamp = DateTime.UtcNow,
@@ -90,24 +123,23 @@ namespace Aquarius.ConsoleApp
                     await readingRepository.AddAsync(temperatureReading);
                     await readingRepository.AddAsync(levelReading);
 
-                    Console.WriteLine("Datos de ejemplo creados correctamente.");
+
+                    await context.SaveChangesAsync(); // Asegura que todo se guarda correctamente
+                    Console.WriteLine("Lecturas de temperatura y alertas creadas correctamente.");
                 }
 
-                // Mostrar información por consola
+                // Mostrar información de la base de datos
                 Console.WriteLine("\nInformación de la base de datos:");
-
                 var farms = await farmRepository.GetAllAsync();
                 foreach (var farm in farms)
                 {
                     Console.WriteLine($"\nGranja: {farm.Name} ({farm.Location})");
-
                     var ponds = await pondRepository.GetAllAsync();
-                    foreach (var pond in ponds.Where(p => p.FarmId == farm.Id))
+                    foreach (var pondr in ponds.Where(p => p.FarmId == farm.Id))
                     {
-                        Console.WriteLine($"  Estanque: {pond.Name} (Capacidad: {pond.Capacity})");
-
+                        Console.WriteLine($"  Estanque: {pondr.Name} (Capacidad: {pondr.Capacity})");
                         var sensors = await sensorRepository.GetAllAsync();
-                        foreach (var sensor in sensors.Where(s => s.PondId == pond.Id))
+                        foreach (var sensor in sensors.Where(s => s.PondId == pondr.Id))
                         {
 
                             var readings = await readingRepository.GetAllAsync();
@@ -118,10 +150,18 @@ namespace Aquarius.ConsoleApp
                         }
                     }
                 }
-            }
 
-            Console.WriteLine("\nPresiona cualquier tecla para salir...");
-            Console.ReadKey();
+                // Mostrar alertas generadas
+                Console.WriteLine("\nAlertas generadas:");
+                var alerts = await alertRepository.GetAllAsync();
+                foreach (var alert in alerts)
+                {
+                    Console.WriteLine($"  Alerta: {alert.Message} ({alert.TimeStamp}) - Estanque: {alert.Pond.Name}");
+                }
+
+                Console.WriteLine("\nPresiona cualquier tecla para salir...");
+                Console.ReadKey();
+            }
         }
     }
 }
