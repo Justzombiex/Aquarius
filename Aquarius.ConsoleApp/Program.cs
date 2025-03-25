@@ -20,7 +20,7 @@ namespace Aquarius.ConsoleApp
                     options.UseNpgsql("Host=localhost;Database=AquariusDB;Username=postgres;Password=1234"))
                 .AddScoped<IFarmRepository, FarmRepository>()
                 .AddScoped<IPondRepository, PondRepository>()
-                .AddScoped<ISensorRepository, SensorRepository>()
+                .AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>()
                 .AddScoped<IReadingRepository, ReadingRepository>()
                 .AddScoped<IAlertRepository, AlertRepository>()
                 .BuildServiceProvider();
@@ -36,7 +36,7 @@ namespace Aquarius.ConsoleApp
                 // Obtener los repositorios
                 var farmRepository = scope.ServiceProvider.GetRequiredService<IFarmRepository>();
                 var pondRepository = scope.ServiceProvider.GetRequiredService<IPondRepository>();
-                var sensorRepository = scope.ServiceProvider.GetRequiredService<ISensorRepository>();
+                var sensorRepository = scope.ServiceProvider.GetRequiredService<ITemperatureSensorRepository>();
                 var readingRepository = scope.ServiceProvider.GetRequiredService<IReadingRepository>();
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IAlertRepository>();
 
@@ -52,13 +52,23 @@ namespace Aquarius.ConsoleApp
                     var pond = new Pond { Id = Guid.NewGuid(), Name = "Estanque 1", Capacity = 1000, FarmId = farm.Id };
                     await pondRepository.AddAsync(pond);
 
-                    var temperatureSensor = new Sensor
+
+                    // Crear sensores
+                    var temperatureSensor = new TemperatureSensor
+
                     {
                         Id = Guid.NewGuid(),
-                        VariableType = VariableType.Temperature,
+                        PondId = pond.Id
+                    };
+
+                    var tempSensor = new TemperatureSensor
+                    {
+                        Id = Guid.NewGuid(),
                         PondId = pond.Id
                     };
                     await sensorRepository.AddAsync(temperatureSensor);
+                    await sensorRepository.AddAsync(tempSensor);
+
 
                     // Generar lecturas aleatorias de temperatura
                     var random = new Random();
@@ -104,8 +114,15 @@ namespace Aquarius.ConsoleApp
                     // Guardar lecturas y alertas en la base de datos
                     foreach (var reading in temperatureReadings)
                     {
-                        await readingRepository.AddAsync(reading);
-                    }
+
+                        Id = Guid.NewGuid(),
+                        Value = 75.0,
+                        Timestamp = DateTime.UtcNow,
+                        SensorId = tempSensor.Id
+                    };
+                    await readingRepository.AddAsync(temperatureReading);
+                    await readingRepository.AddAsync(levelReading);
+
 
                     await context.SaveChangesAsync(); // Asegura que todo se guarda correctamente
                     Console.WriteLine("Lecturas de temperatura y alertas creadas correctamente.");
@@ -124,7 +141,7 @@ namespace Aquarius.ConsoleApp
                         var sensors = await sensorRepository.GetAllAsync();
                         foreach (var sensor in sensors.Where(s => s.PondId == pondr.Id))
                         {
-                            Console.WriteLine($"    Sensor: {sensor.VariableType}");
+
                             var readings = await readingRepository.GetAllAsync();
                             foreach (var reading in readings.Where(r => r.SensorId == sensor.Id))
                             {

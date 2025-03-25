@@ -5,10 +5,10 @@
         public double Value { get; set; } // Reading value (temperature or level)
         public DateTime Timestamp { get; set; }
         public Guid SensorId { get; set; }
-        public Sensor Sensor { get; set; }
+        public TemperatureSensor Sensor { get; set; }
 
         public Reading() { }
-        public Reading(double value, DateTime timestamp, Sensor sensor)
+        public Reading(double value, DateTime timestamp, TemperatureSensor sensor)
         {
             Id = Guid.NewGuid();
             Value = value;

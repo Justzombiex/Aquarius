@@ -1,6 +1,10 @@
 using Aquarius.Data;
 using Aquarius.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.IO.Ports;
+using Aquarius.Services.Alerts;
+using Aquarius.Services.Services;
+
 
 namespace Aquarius.Services
 {
@@ -15,20 +19,23 @@ namespace Aquarius.Services
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Configuraci髇 de Entity Framework con PostgreSQL
+
+            // Registrar el servicio de correo
+            builder.Services.AddSingleton<EmailService>();
+
             builder.Services.AddDbContext<AquariusDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            // Inyecci髇 de Dependencias (Repositorios)
+            // Inyecci贸n de Dependencias (Repositorios)
             builder.Services.AddScoped<IFarmRepository, FarmRepository>();
             builder.Services.AddScoped<IPondRepository, PondRepository>();
-            builder.Services.AddScoped<ISensorRepository, SensorRepository>();
+            builder.Services.AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>();
             builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
             builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
-            // Configuraci髇 de CORS
+            // Configuraci贸n de CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngularApp", policy =>
@@ -36,36 +43,102 @@ namespace Aquarius.Services
                     policy.WithOrigins("http://localhost:4200") // URL de la app Angular
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowCredentials(); // Permite cookies o autenticaci髇 si es necesario
+                          .AllowCredentials(); // Permite cookies o autenticaci贸n si es necesario
                 });
             });
 
-            // Construcci髇 del Aplicativo
+            // Construcci贸n del Aplicativo
             var app = builder.Build();
 
             // Middleware
             if (app.Environment.IsDevelopment())
             {
-                // Documentaci髇 Swagger habilitada en entorno de desarrollo
+                // Documentaci贸n Swagger habilitada en entorno de desarrollo
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // Redirecci髇 HTTPS (puedes comentar esto para desarrollo con HTTP)
+            // Redirecci贸n HTTPS (puedes comentar esto para desarrollo con HTTP)
             app.UseHttpsRedirection();
 
-            // Configuraci髇 de Routing y CORS
+            // Configuraci贸n de Routing y CORS
             app.UseRouting(); // Routing
-            app.UseCors("AllowAngularApp"); // Aplicar pol韙ica de CORS despu閟 de Routing
+            app.UseCors("AllowAngularApp"); // Aplicar pol铆tica de CORS despu茅s de Routing
 
-            // Autorizaci髇
+            // Autorizaci贸n
             app.UseAuthorization();
 
             // Mapear Controladores
             app.MapControllers();
 
-            // Ejecuci髇 de la Aplicaci髇
+            // Ejecuci贸n de la Aplicaci贸n
             app.Run();
+
+            // Crear el contexto de la base de datos y el repositorio
+            var dbContext = new AquariusDbContext(); // Aseg煤rate de configurar tu DbContext correctamente
+            var alertRepository = new AlertRepository(dbContext);
+            var builders = WebApplication.CreateBuilder(args);
+            IConfiguration configuration = builder.Configuration;
+
+            var emailService = new EmailService(configuration);
+
+
+            // Crear instancias de las clases de alerta
+            LowTemperature alertaTemperaturaBaja = new LowTemperature(alertRepository, emailService);
+            HighTemperature alertaTemperaturaAlta = new HighTemperature(alertRepository, emailService);
+            WaterLevelAlert alertaFaltaDeAgua = new WaterLevelAlert(alertRepository, emailService);
+
+            //Obtener los datos del Arduino
+
+            // Configurar el puerto serial
+
+            SerialPort serialPort = new SerialPort("COM3", 9600); // Cambia "COM3" por el puerto correcto
+
+            serialPort.Open();
+
+            while (true)
+            {
+                // Leer una l铆nea de datos desde el puerto serial
+                string data = serialPort.ReadLine();
+
+                // Procesar los datos recibidos
+                ProcesarDatos(data, alertaTemperaturaBaja, alertaTemperaturaAlta, alertaFaltaDeAgua);
+            }
+        }
+
+        static void ProcesarDatos(string data, LowTemperature alertaTemperaturaBaja,HighTemperature alertaTemperaturaAlta, WaterLevelAlert alertaFaltaDeAgua)
+        {
+            // Dividir los datos en partes (temperatura y nivel)
+            string[] partes = data.Split(',');
+
+            if (partes.Length == 2)
+            {
+                try
+                {
+                    // Extraer el valor de temperatura (float)
+                    string temperaturaStr = partes[0].Substring(2); // Eliminar "T:"
+                    float temperatura = float.Parse(temperaturaStr);
+
+                    // Extraer el valor de nivel (bool)
+                    string nivelStr = partes[1].Substring(2); // Eliminar "L:"
+                    bool nivel = nivelStr == "1"; // Convertir "1" a true y "0" a false
+                                                  // Mostrar los valores en la consola
+                    Console.WriteLine($"Temperatura: {temperatura:F2} 掳C, Nivel: {nivel}");
+
+                    // Verificar alertas
+                    alertaTemperaturaBaja.Verificar(temperatura);
+                    alertaTemperaturaAlta.Verificar(temperatura);
+                    alertaFaltaDeAgua.Verificar(nivel);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: Formato de datos incorrecto.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Datos incompletos.");
+            }
         }
     }
 }

@@ -9,23 +9,24 @@ namespace Aquarius.Data
     {
         public DbSet<Farm> Farms { get; set; }
         public DbSet<Pond> Ponds { get; set; }
-        public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<TemperatureSensor> TemperatureSensors { get; set; }
+        public DbSet<LevelSensor> LevelSensors { get; set; }
         public DbSet<Reading> Readings { get; set; }
         public DbSet<Alert> Alerts { get; set; }
 
         /// <summary>
         /// Requerired by EntityFrameworkCore for migration.
         /// </summary>
-        protected AquariusDbContext()
+        public AquariusDbContext()
         {
         }
 
-        public AquariusDbContext(string connectionString) 
+        public AquariusDbContext(string connectionString)
             : base(GetOptions(connectionString))
         {
         }
 
-        
+
         public AquariusDbContext(DbContextOptions<AquariusDbContext> options)
             : base(options)
         {
@@ -40,7 +41,7 @@ namespace Aquarius.Data
             // Aplicar configuraciones Fluent API
             modelBuilder.ApplyConfiguration(new FarmConfiguration());
             modelBuilder.ApplyConfiguration(new PondConfiguration());
-            modelBuilder.ApplyConfiguration(new SensorConfiguration());
+            modelBuilder.ApplyConfiguration(new TemperatureSensorConfiguration());
             modelBuilder.ApplyConfiguration(new ReadingConfiguration());
             modelBuilder.ApplyConfiguration(new AlertConfiguration());
         }
