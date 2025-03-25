@@ -158,3 +158,58 @@ canvas {
   box-shadow: 0 6px 12px rgba(54, 162, 235, 0.3), 0 0 8px rgba(255, 255, 255, 0.4); /* Sombras dinámicas */
   border-radius: 10px; /* Aplica redondeo al canvas */
 }
+
+.species-info {
+  background-color: #f9f9f9; /* Fondo suave */
+  border: 2px solid #ddd; /* Borde tenue */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 30px; /* Incrementar el espaciado interno */
+  max-width: 80%; /* Limitar el ancho al 80% de la pantalla */
+  margin: 20px auto; /* Márgenes superior/inferior y centrado horizontal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para profundidad */
+  font-family: 'Arial', sans-serif; /* Fuente general */
+}
+
+.species-info h2 {
+  font-size: 28px;
+  color: #2c3e50; /* Color del título */
+  margin-bottom: 15px; /* Separación del título respecto al contenido */
+  text-align: center; /* Centrar el título */
+}
+
+.species-info p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #4a4a4a;
+  text-align: justify;
+  margin-bottom: 20px; /* Espaciado entre el párrafo y los elementos siguientes */
+}
+
+.species-info h3 {
+  font-size: 22px;
+  margin-top: 20px;
+  margin-bottom: 15px; /* Espaciado entre el subtítulo y el contenido */
+  color: #34495e;
+}
+
+.species-info ul {
+  list-style: none; /* Eliminar estilo de viñetas predeterminado */
+  padding-left: 0; /* Sin sangría en las listas */
+  margin-top: 10px;
+}
+
+.species-info ul li {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 12px; /* Separar elementos de la lista */
+  position: relative;
+}
+
+.species-info ul li:before {
+  content: "•"; /* Viñeta personalizada */
+  color: #3498db; /* Color de las viñetas */
+  font-weight: bold;
+  display: inline-block;
+  width: 20px;
+  margin-left: -20px; /* Posición de la viñeta */
+}
