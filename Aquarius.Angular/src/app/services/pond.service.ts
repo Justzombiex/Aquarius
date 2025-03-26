@@ -7,7 +7,7 @@ import { Pond } from '../models/pond.model';
   providedIn: 'root'
 })
 export class PondService {
-  private apiUrl = 'https://localhost:5001/api/Ponds';
+  private apiUrl = 'https://localhost:7185/api/Ponds';
 
   constructor(private http: HttpClient) { }
 
