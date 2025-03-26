@@ -1,33 +1,41 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { LevelSensorService } from '../../services/levelsensor.service';
 import { LevelSensor } from '../../models/levelsensor.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tank',
+  standalone: true,
+  imports: [CommonModule], // Importa CommonModule para habilitar directivas como *ngIf
   templateUrl: './water.tank.html',
   styleUrls: ['./water.tank.css'],
-  imports: [CommonModule]
 })
 export class TanqueComponent implements OnInit {
-  isTankFull: boolean = false; // Estado inicial del tanque
-  mensaje: string = 'Cargando estado del tanque...'; // Mensaje inicial
+  private levelSensorService = inject(LevelSensorService); // Inyección directa del servicio
 
-  constructor(private levelSensorService: LevelSensorService) {}
+  isTankFull: boolean = false; // Estado inicial del tanque
 
   ngOnInit(): void {
     this.getTankStatus();
   }
 
-  // Obtiene el estado del tanque desde el sensor de nivel
+  // Método para obtener el estado del tanque desde todos los sensores
   getTankStatus(): void {
-    this.levelSensorService.getLevelSensor('your-sensor-id') // Reemplaza 'your-sensor-id' con el ID del sensor
-      .subscribe((sensor: LevelSensor) => {
-        this.isTankFull = sensor.isFull;
-        this.mensaje = this.isTankFull ? 'El tanque está lleno' : 'El tanque está vacío';
-      }, error => {
-        console.error('Error al obtener el estado del tanque:', error);
-        this.mensaje = 'No se pudo obtener el estado del tanque.';
+    this.levelSensorService.getLevelSensors()
+      .subscribe({
+        next: (sensors: LevelSensor[]) => {
+          if (sensors.length > 0) {
+            const sensor = sensors[0]; // Obtenemos el primer sensor
+            console.log('Valor recibido de isFull:', sensor.fullPond); // Verifica qué valor llega
+            this.isTankFull = sensor.fullPond; // Actualizamos el estado
+          } else {
+            console.error('No se encontraron sensores de nivel.');
+          }
+        },
+        error: (err) => {
+          console.error('Error al obtener los sensores de nivel:', err);
+        },
       });
   }
+  
 }

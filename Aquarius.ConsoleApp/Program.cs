@@ -21,6 +21,7 @@ namespace Aquarius.ConsoleApp
                 .AddScoped<IFarmRepository, FarmRepository>()
                 .AddScoped<IPondRepository, PondRepository>()
                 .AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>()
+                .AddScoped<ILevelSensorRepository, LevelSensorRepository>()
                 .AddScoped<IReadingRepository, ReadingRepository>()
                 .AddScoped<IAlertRepository, AlertRepository>()
                 .BuildServiceProvider();
@@ -33,7 +34,8 @@ namespace Aquarius.ConsoleApp
 
                 var farmRepository = scope.ServiceProvider.GetRequiredService<IFarmRepository>();
                 var pondRepository = scope.ServiceProvider.GetRequiredService<IPondRepository>();
-                var sensorRepository = scope.ServiceProvider.GetRequiredService<ITemperatureSensorRepository>();
+                var temperatureSensorRepository = scope.ServiceProvider.GetRequiredService<ITemperatureSensorRepository>();
+                var levelSensorRepository = scope.ServiceProvider.GetRequiredService<ILevelSensorRepository>();
                 var readingRepository = scope.ServiceProvider.GetRequiredService<IReadingRepository>();
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IAlertRepository>();
 
@@ -67,7 +69,16 @@ namespace Aquarius.ConsoleApp
                         Id = Guid.NewGuid(),
                         PondId = pond.Id
                     };
-                    await sensorRepository.AddAsync(temperatureSensor);
+                    await temperatureSensorRepository.AddAsync(temperatureSensor);
+
+                    // Crear un sensor de nivel con estado Full
+                    var levelSensor = new LevelSensor
+                    {
+                        Id = Guid.NewGuid(),
+                        FullPond = true,
+                        PondId = pond.Id
+                    };
+                    await levelSensorRepository.AddAsync(levelSensor);
 
                     // Generar lecturas de temperatura aleatorias
                     var random = new Random();
@@ -130,8 +141,14 @@ namespace Aquarius.ConsoleApp
                     {
                         Console.WriteLine($"  Estanque: {pond.Name} (Capacidad: {pond.Capacity})");
 
-                        var sensors = await sensorRepository.GetAllAsync();
-                        foreach (var sensor in sensors.Where(s => s.PondId == pond.Id))
+                        var levelSensors = await levelSensorRepository.GetAllAsync();
+                        foreach (var sensor in levelSensors.Where(ls => ls.PondId == pond.Id))
+                        {
+                            Console.WriteLine($"    Sensor de Nivel: {(sensor.FullPond ? "Estanque lleno" : "Estanque vacío")}");
+                        }
+
+                        var temperatureSensors = await temperatureSensorRepository.GetAllAsync();
+                        foreach (var sensor in temperatureSensors.Where(ts => ts.PondId == pond.Id))
                         {
                             Console.WriteLine($"    Sensor de Temperatura: {sensor.Id}");
 

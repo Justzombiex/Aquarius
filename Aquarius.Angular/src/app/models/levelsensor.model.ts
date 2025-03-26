@@ -1,5 +1,5 @@
 export interface LevelSensor {
     id: string;
-    isFull: boolean;
+    fullPond: boolean;
     pondId: string;
   }
