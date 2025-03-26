@@ -1,19 +1,13 @@
 <div class="tanque-container">
-    <h2>Nivel del Estanque</h2>
-    <div class="tanque">
-      <!-- Agua con burbujas -->
-      <div class="agua" [style.height.%]="nivelAgua">
-        <div class="burbujas"></div>
-        <!-- Peces nadando -->
-        <div class="pez"></div>
-        <div class="pez" style="animation-delay: 1s; bottom: 30%;"></div>
-        <div class="pez" style="animation-delay: 2s; bottom: 50%;"></div>
-      </div>
-    </div>
-    <div class="controles">
-      <button (click)="cambiarNivel(100)">Llenar</button>
-      <button (click)="cambiarNivel(50)">Mitad</button>
-      <button (click)="cambiarNivel(0)">Vaciar</button>
+  <h2>Nivel del Estanque</h2>
+  <div class="tanque">
+    <!-- Agua dinámica según el estado del tanque -->
+    <div class="agua" [class.agua-llena]="isTankFull" [class.agua-vacia]="!isTankFull">
+      <div class="burbujas" *ngIf="isTankFull"></div>
     </div>
   </div>
-  
+  <div class="estado-tanque">
+    <p *ngIf="isTankFull" class="tanque-lleno">El tanque está lleno</p>
+    <p *ngIf="!isTankFull" class="tanque-vacio">El tanque está vacío</p>
+  </div>
+</div>

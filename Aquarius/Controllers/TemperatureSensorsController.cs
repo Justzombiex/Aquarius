@@ -1,11 +1,13 @@
 ﻿using Aquarius.Data.Repositories;
 using Aquarius.Domain;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aquarius.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [EnableCors("AllowAngularApp")]
     public class TemperatureSensorsController : ControllerBase
     {
         private readonly ITemperatureSensorRepository _temperatureSensorRepository;
