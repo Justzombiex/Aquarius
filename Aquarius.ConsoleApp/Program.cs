@@ -14,102 +14,162 @@ namespace Aquarius.ConsoleApp
     {
         static async Task Main(string[] args)
         {
-            // Configurar el servicio de inyección de dependencias
+            // Configuración del servicio de inyección de dependencias
             var serviceProvider = new ServiceCollection()
                 .AddDbContext<AquariusDbContext>(options =>
                     options.UseNpgsql("Host=localhost;Database=AquariusDB;Username=postgres;Password=1234"))
                 .AddScoped<IFarmRepository, FarmRepository>()
                 .AddScoped<IPondRepository, PondRepository>()
                 .AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>()
+                .AddScoped<ILevelSensorRepository, LevelSensorRepository>()
                 .AddScoped<IReadingRepository, ReadingRepository>()
                 .AddScoped<IAlertRepository, AlertRepository>()
                 .BuildServiceProvider();
 
-            // Obtener el DbContext
+            // Crear datos iniciales y manejar la base de datos
             using (var scope = serviceProvider.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AquariusDbContext>();
+                await context.Database.EnsureCreatedAsync(); // Crear la base de datos si no existe
 
-                // Crear la base de datos si no existe
-                await context.Database.EnsureCreatedAsync();
-
-                // Obtener los repositorios
                 var farmRepository = scope.ServiceProvider.GetRequiredService<IFarmRepository>();
                 var pondRepository = scope.ServiceProvider.GetRequiredService<IPondRepository>();
-                var sensorRepository = scope.ServiceProvider.GetRequiredService<ITemperatureSensorRepository>();
+                var temperatureSensorRepository = scope.ServiceProvider.GetRequiredService<ITemperatureSensorRepository>();
+                var levelSensorRepository = scope.ServiceProvider.GetRequiredService<ILevelSensorRepository>();
                 var readingRepository = scope.ServiceProvider.GetRequiredService<IReadingRepository>();
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IAlertRepository>();
 
-                // Crear datos iniciales si no existen
+                // Crear y guardar datos si no existen
                 if (!(await farmRepository.GetAllAsync()).Any())
                 {
-                    Console.WriteLine("Creando datos de ejemplo...");
+                    Console.WriteLine("Creando datos iniciales...");
 
-                    // Crear granja, estanque y sensor
-                    var farm = new Farm { Id = Guid.NewGuid(), Name = "Granja Principal", Location = "Ubicación A" };
+                    // Crear una granja
+                    var farm = new Farm
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Granja Principal",
+                        Location = "Ubicación A"
+                    };
                     await farmRepository.AddAsync(farm);
 
-                    var pond = new Pond { Id = Guid.NewGuid(), Name = "Estanque 1", Capacity = 1000, FarmId = farm.Id };
+                    // Crear un estanque
+                    var pond = new Pond
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Estanque Principal",
+                        Capacity = 1000,
+                        FarmId = farm.Id
+                    };
                     await pondRepository.AddAsync(pond);
 
-
-                    // Crear sensores
+                    // Crear un sensor de temperatura
                     var temperatureSensor = new TemperatureSensor
-
                     {
                         Id = Guid.NewGuid(),
                         PondId = pond.Id
                     };
+                    await temperatureSensorRepository.AddAsync(temperatureSensor);
 
-                    var tempSensor = new TemperatureSensor
+                    // Crear un sensor de nivel con estado Full
+                    var levelSensor = new LevelSensor
                     {
                         Id = Guid.NewGuid(),
+                        FullPond = true,
                         PondId = pond.Id
                     };
-                    await sensorRepository.AddAsync(temperatureSensor);
-                    await sensorRepository.AddAsync(tempSensor);
+                    await levelSensorRepository.AddAsync(levelSensor);
 
+      
+                    // Generar lecturas de temperatura aleatorias
+                    var random = new Random();
+                    for (int i = 0; i < 20; i++)
+                    {
+                        var temperatureValue = random.NextDouble() * (40 - 20) + 20;
+                        var reading = new Reading
+                        {
+                            Id = Guid.NewGuid(),
+                            Value = Math.Round(temperatureValue, 2),
+                            Timestamp = DateTime.UtcNow.AddMinutes(-20 + i),
+                            SensorId = temperatureSensor.Id
+                        };
+                        await readingRepository.AddAsync(reading);
+                    }
 
-                   
+                    // Crear las 3 alertas específicas
+                    var alerts = new List<Alert>
+                    {
+                        new Alert
+                        {
+                            Id = Guid.NewGuid(),
+                            Message = "Temperatura alta",
+                            TimeStamp = DateTime.UtcNow,
+                            PondId = pond.Id
+                        },
+                        new Alert
+                        {
+                            Id = Guid.NewGuid(),
+                            Message = "Temperatura baja",
+                            TimeStamp = DateTime.UtcNow,
+                            PondId = pond.Id
+                        },
+                        new Alert
+                        {
+                            Id = Guid.NewGuid(),
+                            Message = "Desconexión de Arduino",
+                            TimeStamp = DateTime.UtcNow,
+                            PondId = pond.Id
+                        }
+                    };
 
-                    await context.SaveChangesAsync(); // Asegura que todo se guarda correctamente
-                    Console.WriteLine("Lecturas de temperatura y alertas creadas correctamente.");
+                    foreach (var alert in alerts)
+                    {
+                        await alertRepository.AddAsync(alert);
+                    }
+
+                    Console.WriteLine("Datos iniciales creados correctamente.");
                 }
 
-                // Mostrar información de la base de datos
+                // Mostrar datos existentes en la base de datos
                 Console.WriteLine("\nInformación de la base de datos:");
                 var farms = await farmRepository.GetAllAsync();
                 foreach (var farm in farms)
                 {
                     Console.WriteLine($"\nGranja: {farm.Name} ({farm.Location})");
+
                     var ponds = await pondRepository.GetAllAsync();
-                    foreach (var pondr in ponds.Where(p => p.FarmId == farm.Id))
+                    foreach (var pond in ponds.Where(p => p.FarmId == farm.Id))
                     {
-                        Console.WriteLine($"  Estanque: {pondr.Name} (Capacidad: {pondr.Capacity})");
-                        var sensors = await sensorRepository.GetAllAsync();
-                        foreach (var sensor in sensors.Where(s => s.PondId == pondr.Id))
+                        Console.WriteLine($"  Estanque: {pond.Name} (Capacidad: {pond.Capacity})");
+
+                        var levelSensors = await levelSensorRepository.GetAllAsync();
+                        foreach (var sensor in levelSensors.Where(ls => ls.PondId == pond.Id))
                         {
+                            Console.WriteLine($"    Sensor de Nivel: {(sensor.FullPond ? "Estanque lleno" : "Estanque vacío")}");
+                        }
+
+                        var temperatureSensors = await temperatureSensorRepository.GetAllAsync();
+                        foreach (var sensor in temperatureSensors.Where(ts => ts.PondId == pond.Id))
+                        {
+                            Console.WriteLine($"    Sensor de Temperatura: {sensor.Id}");
 
                             var readings = await readingRepository.GetAllAsync();
                             foreach (var reading in readings.Where(r => r.SensorId == sensor.Id))
                             {
-                                Console.WriteLine($"      Lectura: {reading.Value} ({reading.Timestamp})");
+                                Console.WriteLine($"      Lectura: {reading.Value} °C (Registrada: {reading.Timestamp})");
                             }
+                        }
+
+                        var alerts = await alertRepository.GetAllAsync();
+                        foreach (var alert in alerts.Where(a => a.PondId == pond.Id))
+                        {
+                            Console.WriteLine($"    Alerta: {alert.Message} ({alert.TimeStamp})");
                         }
                     }
                 }
-
-                // Mostrar alertas generadas
-                Console.WriteLine("\nAlertas generadas:");
-                var alerts = await alertRepository.GetAllAsync();
-                foreach (var alert in alerts)
-                {
-                    Console.WriteLine($"  Alerta: {alert.Message} ({alert.TimeStamp}) - Estanque: {alert.Pond.Name}");
-                }
-
-                Console.WriteLine("\nPresiona cualquier tecla para salir...");
-                Console.ReadKey();
             }
+
+            Console.WriteLine("\nPrograma finalizado.");
         }
     }
 }

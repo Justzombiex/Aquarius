@@ -1,33 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Sensor } from '../models/sensor.model';
+import { TemperatureSensor } from '../models/sensor.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SensorService {
-  private apiUrl = 'https://localhost:5001/api/Sensors';
+export class TemperatureSensorService {
+  private apiUrl = 'https://localhost:7185/api/TemperatureSensors';
 
   constructor(private http: HttpClient) { }
 
-  getSensors(): Observable<Sensor[]> {
-    return this.http.get<Sensor[]>(this.apiUrl);
+  getTemperatureSensors(): Observable<TemperatureSensor[]> {
+    return this.http.get<TemperatureSensor[]>(this.apiUrl);
   }
 
-  getSensor(id: string): Observable<Sensor> {
-    return this.http.get<Sensor>(`${this.apiUrl}/${id}`);
+  getTemperatureSensor(id: string): Observable<TemperatureSensor> {
+    return this.http.get<TemperatureSensor>(`${this.apiUrl}/${id}`);
   }
 
-  createSensor(sensor: Sensor): Observable<Sensor> {
-    return this.http.post<Sensor>(this.apiUrl, sensor);
+  createTemperatureSensor(temperatureSensor: TemperatureSensor): Observable<TemperatureSensor> {
+    return this.http.post<TemperatureSensor>(this.apiUrl, temperatureSensor);
   }
 
-  updateSensor(id: string, sensor: Sensor): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, sensor);
+  updateTemperatureSensor(id: string, temperatureSensor: TemperatureSensor): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, temperatureSensor);
   }
 
-  deleteSensor(id: string): Observable<void> {
+  deleteTemperatureSensor(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

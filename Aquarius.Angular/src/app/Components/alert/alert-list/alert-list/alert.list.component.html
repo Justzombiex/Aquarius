@@ -1,0 +1,97 @@
+<div class="alert-container">
+  <h2>Estado de las Alarmas</h2>
+
+  <!-- Alerta de temperatura alta -->
+  <div class="alert-wrapper">
+    <mat-card class="alert-card" 
+              [class.high-temp]="!isLocalAcknowledged('highTemp')"
+              [class.acknowledged]="isLocalAcknowledged('highTemp')">
+      <div class="card-content">
+        <div class="icon-title-wrapper">
+          <mat-icon class="alert-icon">
+            {{isLocalAcknowledged('highTemp') ? 'check_circle' : 'local_fire_department'}}
+          </mat-icon>
+          <mat-card-title>Temperatura Alta</mat-card-title>
+        </div>
+        <mat-card-content>
+          <p>{{isLocalAcknowledged('highTemp') ? 'Alarma reconocida' : 'La temperatura ha excedido el límite seguro.'}}</p>
+        </mat-card-content>
+      </div>
+      <div class="card-actions">
+        <mat-card-actions *ngIf="!isLocalAcknowledged('highTemp')">
+          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('highTemp')">Reconocer</button>
+        </mat-card-actions>
+        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('highTemp')">
+          <mat-icon>power_settings_new</mat-icon> Activar
+        </button>
+      </div>
+    </mat-card>
+    <div class="status-light" 
+         [class.active]="!isLocalAcknowledged('highTemp')"
+         [class.inactive]="isLocalAcknowledged('highTemp')"></div>
+  </div>
+
+  <!-- Alerta de temperatura baja -->
+  <div class="alert-wrapper">
+    <mat-card class="alert-card" 
+              [class.low-temp]="!isLocalAcknowledged('lowTemp')"
+              [class.acknowledged]="isLocalAcknowledged('lowTemp')">
+      <div class="card-content">
+        <div class="icon-title-wrapper">
+          <mat-icon class="alert-icon">
+            {{isLocalAcknowledged('lowTemp') ? 'check_circle' : 'ac_unit'}}
+          </mat-icon>
+          <mat-card-title>Temperatura Baja</mat-card-title>
+        </div>
+        <mat-card-content>
+          <p>{{isLocalAcknowledged('lowTemp') ? 'Alarma reconocida' : 'La temperatura está por debajo del nivel mínimo permitido.'}}</p>
+        </mat-card-content>
+      </div>
+      <div class="card-actions">
+        <mat-card-actions *ngIf="!isLocalAcknowledged('lowTemp')">
+          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('lowTemp')">Reconocer</button>
+        </mat-card-actions>
+        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('lowTemp')">
+          <mat-icon>power_settings_new</mat-icon> Activar
+        </button>
+      </div>
+    </mat-card>
+    <div class="status-light" 
+         [class.active]="!isLocalAcknowledged('lowTemp')"
+         [class.inactive]="isLocalAcknowledged('lowTemp')"></div>
+  </div>
+
+  <!-- Alerta de desconexión -->
+  <div class="alert-wrapper">
+    <mat-card class="alert-card" 
+              [class.disconnection]="!isLocalAcknowledged('disconnection')"
+              [class.acknowledged]="isLocalAcknowledged('disconnection')">
+      <div class="card-content">
+        <div class="icon-title-wrapper">
+          <mat-icon class="alert-icon">
+            {{isLocalAcknowledged('disconnection') ? 'check_circle' : 'link_off'}}
+          </mat-icon>
+          <mat-card-title>Desconexión de Arduino</mat-card-title>
+        </div>
+        <mat-card-content>
+          <p>{{isLocalAcknowledged('disconnection') ? 'Alarma reconocida' : 'La conexión con el dispositivo Arduino se ha perdido.'}}</p>
+        </mat-card-content>
+      </div>
+      <div class="card-actions">
+        <mat-card-actions *ngIf="!isLocalAcknowledged('disconnection')">
+          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('disconnection')">Reconocer</button>
+        </mat-card-actions>
+        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('disconnection')">
+          <mat-icon>power_settings_new</mat-icon> Activar
+        </button>
+      </div>
+    </mat-card>
+    <div class="status-light" 
+         [class.active]="!isLocalAcknowledged('disconnection')"
+         [class.inactive]="isLocalAcknowledged('disconnection')"></div>
+  </div>
+
+  <button mat-button color="primary" class="show-alerts-btn" (click)="openAlertDialog()">
+    <mat-icon>list_alt</mat-icon> Mostrar Registro de Alertas
+  </button>
+</div>

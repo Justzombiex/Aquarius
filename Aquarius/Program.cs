@@ -34,6 +34,7 @@ namespace Aquarius.Services
             builder.Services.AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>();
             builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
             builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+            builder.Services.AddScoped<ILevelSensorRepository, LevelSensorRepository>();
 
             // Configuración de CORS
             builder.Services.AddCors(options =>

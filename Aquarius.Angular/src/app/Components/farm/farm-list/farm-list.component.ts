@@ -11,7 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import { AlertListComponent } from "../../alert/alert-list/alert.list.component";
+import { AlertListComponent } from "../../alert/alert-list/alert-list/alert.list.component";
 import { DashBoard } from "../../dashboard/dashboard";
 
 @Component({

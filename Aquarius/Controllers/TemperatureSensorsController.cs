@@ -1,70 +1,72 @@
 ﻿using Aquarius.Data.Repositories;
 using Aquarius.Domain;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aquarius.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class LevelSensorsController : ControllerBase
+    [Route("api/[controller]")]
+    [EnableCors("AllowAngularApp")]
+    public class TemperatureSensorsController : ControllerBase
     {
-        private readonly ILevelSensorRepository _levelSensorRepository;
+        private readonly ITemperatureSensorRepository _temperatureSensorRepository;
 
-        public LevelSensorsController(ILevelSensorRepository levelSensorRepository)
+        public TemperatureSensorsController(ITemperatureSensorRepository temperatureSensorRepository)
         {
-            _levelSensorRepository = levelSensorRepository;
+            _temperatureSensorRepository = temperatureSensorRepository;
         }
 
-        // GET: api/LevelSensors
+        // GET: api/TemperatureSensors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LevelSensor>>> GetLevelSensors()
+        public async Task<ActionResult<IEnumerable<TemperatureSensor>>> GetTemperatureSensors()
         {
-            return Ok(await _levelSensorRepository.GetAllAsync());
+            return Ok(await _temperatureSensorRepository.GetAllAsync());
         }
 
-        // GET: api/LevelSensors/{id}
+        // GET: api/TemperatureSensors/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<LevelSensor>> GetLevelSensor(Guid id)
+        public async Task<ActionResult<TemperatureSensor>> GetTemperatureSensor(Guid id)
         {
-            var levelSensor = await _levelSensorRepository.GetByIdAsync(id);
-            if (levelSensor == null)
+            var temperatureSensor = await _temperatureSensorRepository.GetByIdAsync(id);
+            if (temperatureSensor == null)
             {
                 return NotFound();
             }
-            return Ok(levelSensor);
+            return Ok(temperatureSensor);
         }
 
-        // POST: api/LevelSensors
+        // POST: api/TemperatureSensors
         [HttpPost]
-        public async Task<ActionResult<LevelSensor>> CreateLevelSensor([FromBody] LevelSensor levelSensor)
+        public async Task<ActionResult<TemperatureSensor>> CreateTemperatureSensor([FromBody] TemperatureSensor temperatureSensor)
         {
-            if (levelSensor == null)
+            if (temperatureSensor == null)
             {
                 return BadRequest();
             }
 
-            await _levelSensorRepository.AddAsync(levelSensor);
-            return CreatedAtAction(nameof(GetLevelSensor), new { id = levelSensor.Id }, levelSensor);
+            await _temperatureSensorRepository.AddAsync(temperatureSensor);
+            return CreatedAtAction(nameof(GetTemperatureSensor), new { id = temperatureSensor.Id }, temperatureSensor);
         }
 
-        // PUT: api/LevelSensors/{id}
+        // PUT: api/TemperatureSensors/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLevelSensor(Guid id, [FromBody] LevelSensor levelSensor)
+        public async Task<IActionResult> UpdateTemperatureSensor(Guid id, [FromBody] TemperatureSensor temperatureSensor)
         {
-            if (id != levelSensor.Id)
+            if (id != temperatureSensor.Id)
             {
                 return BadRequest();
             }
 
-            await _levelSensorRepository.UpdateAsync(levelSensor);
+            await _temperatureSensorRepository.UpdateAsync(temperatureSensor);
             return NoContent();
         }
 
-        // DELETE: api/LevelSensors/{id}
+        // DELETE: api/TemperatureSensors/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLevelSensor(Guid id)
+        public async Task<IActionResult> DeleteTemperatureSensor(Guid id)
         {
-            await _levelSensorRepository.DeleteAsync(id);
+            await _temperatureSensorRepository.DeleteAsync(id);
             return NoContent();
         }
     }
