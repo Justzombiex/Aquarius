@@ -1,38 +1,38 @@
 .alert-container {
-  max-width: 900px;
-  margin: 20px 0; /* Eliminamos el auto para quitar el centrado */
-  padding: 20px;
+  max-width: 800px; /* Reducido para mejor ajuste */
+  margin: 20px 0;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Asegura alineación izquierda */
-  gap: 20px;
+  align-items: flex-start;
+  gap: 15px; /* Espaciado reducido */
 }
 
 .alert-container h2 {
   color: #1976d2;
-  font-size: 24px;
-  margin-bottom: 10px;
-  text-align: left; /* Alineación a la izquierda */
+  font-size: 22px; /* Tamaño reducido */
+  margin-bottom: 8px;
+  text-align: left;
   width: 100%;
 }
 
 .alert-wrapper {
   display: flex;
   align-items: center;
-  width: auto; /* Cambiado de 100% a auto para no estirar */
-  justify-content: flex-start; /* Alinea el contenido a la izquierda */
+  width: auto;
+  justify-content: flex-start;
 }
 
 .alert-card {
-  width: 500px; /* Ancho fijo para mejor control */
-  min-height: 110px;
-  border-radius: 10px;
-  padding: 15px 20px;
+  width: 380px; /* Reducido de 500px */
+  min-height: 90px; /* Reducido de 110px */
+  border-radius: 8px;
+  padding: 12px 15px; /* Padding reducido */
   display: flex;
   justify-content: space-between;
   transition: all 0.3s ease;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  margin-right: auto; /* Empuja todo a la izquierda */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
+  margin-right: auto;
 }
 
 .card-content {
@@ -44,26 +44,26 @@
 .icon-title-wrapper {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 8px;
+  gap: 12px; /* Reducido de 15px */
+  margin-bottom: 6px;
 }
 
 .alert-icon {
-  font-size: 36px;
-  width: 36px;
-  height: 36px;
+  font-size: 30px; /* Reducido de 36px */
+  width: 30px;
+  height: 30px;
 }
 
 mat-card-title {
-  font-size: 18px;
+  font-size: 16px; /* Reducido de 18px */
   font-weight: 500;
   margin: 0;
 }
 
 mat-card-content p {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: 13px; /* Reducido de 14px */
+  line-height: 1.3;
   color: #555;
 }
 
@@ -71,67 +71,64 @@ mat-card-content p {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  margin-left: 15px;
-  min-width: 110px; /* Reducido para botón más pequeño */
+  margin-left: 12px; /* Reducido de 15px */
+  min-width: 100px; /* Reducido de 110px */
 }
 
 .acknowledge-btn {
   background-color: #1976d2;
   color: white !important;
-  border-radius: 18px;
-  padding: 0 12px;
-  height: 32px;
-  font-size: 13px;
-  margin-bottom: 8px;
+  border-radius: 16px;
+  padding: 0 10px;
+  height: 30px; /* Reducido de 32px */
+  font-size: 12px; /* Reducido de 13px */
+  margin-bottom: 6px;
 }
 
-/* Botón de activar manualmente más pequeño */
 .manual-activate-btn {
   background-color: #6c757d;
   color: white !important;
-  border-radius: 18px;
-  padding: 0 8px; /* Más compacto */
-  height: 28px; /* Más pequeño */
-  font-size: 12px; /* Texto más pequeño */
+  border-radius: 16px;
+  padding: 0 6px;
+  height: 26px; /* Reducido de 28px */
+  font-size: 11px; /* Reducido de 12px */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .manual-activate-btn mat-icon {
-  font-size: 14px; /* Icono más pequeño */
-  margin-right: 4px;
+  font-size: 13px; /* Reducido de 14px */
+  margin-right: 3px;
 }
 
 .status-light {
-  width: 40px;              /* Más grande (antes 25px) */
-  height: 40px;             /* Más grande (antes 25px) */
+  width: 35px; /* Reducido de 40px */
+  height: 35px;
   border-radius: 50%;
-  margin-left: 20px;        /* Más espacio */
-  box-shadow: 0 0 20px;     /* Sombra más pronunciada */
-  position: relative;       /* Para el efecto de brillo */
+  margin-left: 15px; /* Reducido de 20px */
+  box-shadow: 0 0 15px;
+  position: relative;
 }
 
-/* Luz activa - Animación más rápida y vistosa */
 .status-light.active {
-  background-color: #ff4444; /* Rojo más vibrante */
-  box-shadow: 0 0 25px #ff0000; /* Sombra roja intensa */
-  animation: vividBlink 0.8s infinite ease-in-out; /* Más rápido (antes 1.5s) */
+  background-color: #ff4444;
+  box-shadow: 0 0 20px #ff0000;
+  animation: vividBlink 0.8s infinite ease-in-out;
 }
 
-/* Luz inactiva - Más brillante */
 .status-light.inactive {
-  background-color: #66ff66; /* Verde más brillante */
-  box-shadow: 0 0 25px #00ff00; /* Sombra verde intensa */
+  background-color: #66ff66;
+  box-shadow: 0 0 20px #00ff00;
 }
 
 .status-light::after {
   content: '';
   position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
   border-radius: 50%;
   background: radial-gradient(circle at center, 
               rgba(255,255,255,0.8) 0%, 
@@ -140,53 +137,53 @@ mat-card-content p {
   pointer-events: none;
 }
 
-/* Botón Mostrar Alarmas con fondo */
 .show-alerts-btn {
-  margin-top: 20px;
+  margin-top: 15px; /* Reducido de 20px */
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-radius: 24px;
-  padding: 8px 24px;
-  background-color: #1976d2; /* Fondo azul */
+  gap: 6px;
+  border-radius: 20px;
+  padding: 6px 20px;
+  background-color: #1976d2;
   color: white !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
 
 .show-alerts-btn:hover {
-  background-color: #1565c0; /* Azul más oscuro al hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #1565c0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .show-alerts-btn:active {
-  background-color: #0d47a1; /* Azul más intenso al hacer clic */
+  background-color: #0d47a1;
   transform: scale(0.98);
 }
 
 .show-alerts-btn mat-icon {
-  font-size: 20px;
+  font-size: 18px; /* Reducido de 20px */
 }
 
 /* Estilos de estado */
 .alert-card.high-temp {
   background-color: #ffebee;
-  border-left: 6px solid #f44336;
+  border-left: 5px solid #f44336;
 }
 
 .alert-card.low-temp {
   background-color: #e3f2fd;
-  border-left: 6px solid #2196f3;
+  border-left: 5px solid #2196f3;
 }
 
+/* Estilo actualizado para desconexión - más verde */
 .alert-card.disconnection {
-  background-color: #fff3e0;
-  border-left: 6px solid #ff9800;
+  background-color: #e8f5e9; /* Verde más claro */
+  border-left: 5px solid #4caf50; /* Verde más intenso */
 }
 
 .alert-card.acknowledged {
-  background-color: #e8f5e9;
-  border-left: 6px solid #4caf50;
+  background-color: #f1f8e9; /* Verde muy claro */
+  border-left: 5px solid #8bc34a; /* Verde medio */
 }
 
 .alert-card.high-temp .alert-icon {
@@ -197,23 +194,53 @@ mat-card-content p {
   color: #2196f3;
 }
 
+/* Icono actualizado para desconexión - verde */
 .alert-card.disconnection .alert-icon {
-  color: #ff9800;
+  color: #4caf50; /* Verde */
 }
 
 .alert-card.acknowledged .alert-icon {
-  color: #4caf50;
+  color: #8bc34a; /* Verde más claro */
 }
 
 @keyframes vividBlink {
   0%, 100% { 
     transform: scale(1);
     opacity: 1;
-    box-shadow: 0 0 30px #ff0000; 
+    box-shadow: 0 0 25px #ff0000; 
   }
   50% { 
-    transform: scale(1.2);          /* Escala más grande */
+    transform: scale(1.1);
     opacity: 0.8;
-    box-shadow: 0 0 50px #ff0000;   /* Sombra más grande */
+    box-shadow: 0 0 40px #ff0000;
+  }
+}
+
+/* Estilos para la alerta de Espejo Seco */
+.alert-card.dry-pond {
+  background-color: #fff8e1;
+  border-left: 5px solid #ffc107;
+}
+
+.alert-card.dry-pond .alert-icon {
+  color: #ffc107;
+}
+
+.status-light.active.dry-pond {
+  background-color: #ffc107;
+  box-shadow: 0 0 20px #ff8f00;
+  animation: waterBlink 1.2s infinite ease-in-out;
+}
+
+@keyframes waterBlink {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 25px #ff8f00;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.7;
+    box-shadow: 0 0 35px #ff6d00;
   }
 }

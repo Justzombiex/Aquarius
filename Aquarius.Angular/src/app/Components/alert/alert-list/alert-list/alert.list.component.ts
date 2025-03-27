@@ -27,11 +27,12 @@ export class AlertListComponent implements OnInit {
   alerts: Alert[] = [];
   isAlarmActive: boolean = false;
   
-  // Estados locales de reconocimiento (solo interfaz)
+  // Estados locales de reconocimiento (actualizado con dryPond)
   localAckStates = {
     highTemp: false,
     lowTemp: false,
-    disconnection: false
+    disconnection: false,
+    dryPond: false
   };
 
   ngOnInit(): void {
@@ -58,24 +59,38 @@ export class AlertListComponent implements OnInit {
     });
   }
 
-  // Método solo para interfaz
-  acknowledgeLocalAlert(type: 'highTemp' | 'lowTemp' | 'disconnection'): void {
+  // Método solo para interfaz (actualizado con dryPond)
+  acknowledgeLocalAlert(type: 'highTemp' | 'lowTemp' | 'disconnection' | 'dryPond'): void {
     this.localAckStates[type] = true;
+    
+    // Opcional: Aquí podrías añadir lógica para notificar al backend
+    // cuando una alerta es reconocida localmente
+    console.log(`Alarma ${type} reconocida localmente`);
   }
 
-  // Verifica estado local
-  isLocalAcknowledged(type: 'highTemp' | 'lowTemp' | 'disconnection'): boolean {
+  // Verifica estado local (actualizado con dryPond)
+  isLocalAcknowledged(type: 'highTemp' | 'lowTemp' | 'disconnection' | 'dryPond'): boolean {
     return this.localAckStates[type];
   }
 
-  activateManualAlert(alertType: 'highTemp' | 'lowTemp' | 'disconnection') {
-    // Lógica para activación manual
+  // Método para activación manual (actualizado con dryPond)
+  activateManualAlert(alertType: 'highTemp' | 'lowTemp' | 'disconnection' | 'dryPond') {
     console.log(`Activando manualmente alarma: ${alertType}`);
     
-    // Ejemplo: Resetear el estado de reconocimiento
+    // Resetear el estado de reconocimiento
     this.localAckStates[alertType] = false;
     
     // Aquí puedes agregar lógica para simular la activación
     // o conectar con tu backend cuando esté listo
+    
+    // Ejemplo de simulación:
+    this.simulateAlert(alertType);
+  }
+
+  // Método opcional para simular alertas (puedes eliminarlo en producción)
+  private simulateAlert(type: string): void {
+    console.log(`Simulando alerta de ${type}`);
+    // Aquí podrías añadir lógica para simular la alerta
+    // Por ejemplo, mostrar un mensaje o cambiar algún estado temporal
   }
 }

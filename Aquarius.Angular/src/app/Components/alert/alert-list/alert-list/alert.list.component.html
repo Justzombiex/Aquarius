@@ -91,6 +91,36 @@
          [class.inactive]="isLocalAcknowledged('disconnection')"></div>
   </div>
 
+  <!-- Alerta de Espejo Seco (ausencia de agua) - NUEVA -->
+  <div class="alert-wrapper">
+    <mat-card class="alert-card" 
+              [class.dry-pond]="!isLocalAcknowledged('dryPond')"
+              [class.acknowledged]="isLocalAcknowledged('dryPond')">
+      <div class="card-content">
+        <div class="icon-title-wrapper">
+          <mat-icon class="alert-icon">
+            {{isLocalAcknowledged('dryPond') ? 'check_circle' : 'water_drop'}}
+          </mat-icon>
+          <mat-card-title>Estanque seco</mat-card-title>
+        </div>
+        <mat-card-content>
+          <p>{{isLocalAcknowledged('dryPond') ? 'Alarma reconocida' : 'Nivel de agua crítico en el estanque.'}}</p>
+        </mat-card-content>
+      </div>
+      <div class="card-actions">
+        <mat-card-actions *ngIf="!isLocalAcknowledged('dryPond')">
+          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('dryPond')">Reconocer</button>
+        </mat-card-actions>
+        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('dryPond')">
+          <mat-icon>power_settings_new</mat-icon> Activar
+        </button>
+      </div>
+    </mat-card>
+    <div class="status-light" 
+         [class.active]="!isLocalAcknowledged('dryPond')"
+         [class.inactive]="isLocalAcknowledged('dryPond')"></div>
+  </div>
+
   <button mat-button color="primary" class="show-alerts-btn" (click)="openAlertDialog()">
     <mat-icon>list_alt</mat-icon> Mostrar Registro de Alertas
   </button>
