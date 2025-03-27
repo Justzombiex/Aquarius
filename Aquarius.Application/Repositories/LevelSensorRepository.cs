@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Aquarius.Domain;
+﻿using Aquarius.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aquarius.Data.Repositories

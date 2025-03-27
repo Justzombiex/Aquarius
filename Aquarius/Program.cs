@@ -83,7 +83,6 @@ namespace Aquarius.Services
 
             var emailService = new EmailService(configuration);
 
-
             // Crear instancias de las clases de alerta
             LowTemperature alertaTemperaturaBaja = new LowTemperature(alertRepository, emailService);
             HighTemperature alertaTemperaturaAlta = new HighTemperature(alertRepository, emailService);

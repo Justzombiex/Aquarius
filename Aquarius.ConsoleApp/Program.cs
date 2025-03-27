@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Aquarius.Data;
 using Aquarius.Data.Repositories;
-using Aquarius.Data;
 using Aquarius.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,7 +76,7 @@ namespace Aquarius.ConsoleApp
                     };
                     await levelSensorRepository.AddAsync(levelSensor);
 
-      
+
                     // Generar lecturas de temperatura aleatorias
                     var random = new Random();
                     for (int i = 0; i < 20; i++)
@@ -99,28 +95,11 @@ namespace Aquarius.ConsoleApp
                     // Crear las 3 alertas específicas
                     var alerts = new List<Alert>
                     {
-                        new Alert
-                        {
-                            Id = Guid.NewGuid(),
-                            Message = "Temperatura alta",
-                            TimeStamp = DateTime.UtcNow,
-                            PondId = pond.Id
-                        },
-                        new Alert
-                        {
-                            Id = Guid.NewGuid(),
-                            Message = "Temperatura baja",
-                            TimeStamp = DateTime.UtcNow,
-                            PondId = pond.Id
-                        },
-                        new Alert
-                        {
-                            Id = Guid.NewGuid(),
-                            Message = "Desconexión de Arduino",
-                            TimeStamp = DateTime.UtcNow,
-                            PondId = pond.Id
-                        }
+                    new Alert("Temperatura alta", DateTime.UtcNow, pond),
+                    new Alert("Temperatura baja", DateTime.UtcNow, pond),
+                    new Alert("Desconexión de Arduino", DateTime.UtcNow, pond)
                     };
+
 
                     foreach (var alert in alerts)
                     {
