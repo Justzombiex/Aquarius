@@ -28,6 +28,7 @@ namespace Aquarius.Services.Alerts
                     Id = Guid.NewGuid(),
                     Message = mensaje,
                     TimeStamp = DateTime.UtcNow,
+                    IsActive = true,
                 };
 
                 await _alertRepository.AddAsync(alerta);

@@ -8,6 +8,8 @@
         public Guid PondId { get; set; }
         public Pond Pond { get; set; }
 
+        public bool IsActive { get; set; }
+
         public Alert() { }
         public Alert(string message, DateTime timestamp, Pond pond)
         {
@@ -16,6 +18,7 @@
             TimeStamp = timestamp;
             PondId = pond.Id;
             Pond = pond;
+            IsActive = true;
         }
     }
 }

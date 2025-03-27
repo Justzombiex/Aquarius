@@ -70,59 +70,7 @@ namespace Aquarius.ConsoleApp
                     await sensorRepository.AddAsync(tempSensor);
 
 
-                    // Generar lecturas aleatorias de temperatura
-                    var random = new Random();
-                    var temperatureReadings = new List<Reading>();
-
-                    for (int i = 0; i < 15; i++)
-                    {
-                        // Generar una temperatura aleatoria entre 25.0 y 40.0
-                        double temp = Math.Round(random.NextDouble() * (40.0 - 25.0) + 25.0, 2);
-                        var reading = new Reading
-                        {
-                            Id = Guid.NewGuid(),
-                            Value = temp,
-                            Timestamp = DateTime.UtcNow.AddMinutes(-15 + i),
-                            SensorId = temperatureSensor.Id
-                        };
-                        temperatureReadings.Add(reading);
-
-                        // Crear alertas si el valor es crítico
-                        if (temp > 30.0)
-                        {
-                            var alert1 = new Alert(
-                                "Alta temperatura detectada!",
-                                VariableType.Temperature,
-                                reading.Timestamp,
-                                pond
-                            );
-                            await alertRepository.AddAsync(alert1);
-
-                            if (temp > 35.0)
-                            {
-                                var alert2 = new Alert(
-                                    "Temperatura extremadamente alta detectada!",
-                                    VariableType.Temperature,
-                                    reading.Timestamp,
-                                    pond
-                                );
-                                await alertRepository.AddAsync(alert2);
-                            }
-                        }
-                    }
-
-                    // Guardar lecturas y alertas en la base de datos
-                    foreach (var reading in temperatureReadings)
-                    {
-
-                        Id = Guid.NewGuid(),
-                        Value = 75.0,
-                        Timestamp = DateTime.UtcNow,
-                        SensorId = tempSensor.Id
-                    };
-                    await readingRepository.AddAsync(temperatureReading);
-                    await readingRepository.AddAsync(levelReading);
-
+                   
 
                     await context.SaveChangesAsync(); // Asegura que todo se guarda correctamente
                     Console.WriteLine("Lecturas de temperatura y alertas creadas correctamente.");
