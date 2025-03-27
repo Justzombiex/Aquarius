@@ -1,21 +1,26 @@
 <div class="tanque-container">
   <h2>Nivel del Estanque</h2>
-  <p class="estado-estanque">{{ isTankFull ? '🌊 Estanque Lleno 🌊' : '🏜️ Estanque Vacío 🏜️' }}</p>
-  
+  <p class="estado-estanque">
+    {{ isTankFull ? '🌊 Estanque Lleno 🌊' : '🏜️ Estanque Vacío 🏜️' }}
+  </p>
+
   <!-- Contenedor del tanque -->
   <div class="tanque">
     <!-- Agua dinámica -->
-    <div class="agua" [class.agua-llena]="isTankFull" [class.agua-vacia]="!isTankFull">
-      
+    <div
+      class="agua"
+      [class.agua-llena]="isTankFull"
+      [class.agua-vacia]="!isTankFull"
+    >
       <!-- Burbujas, visibles solo si el tanque está lleno -->
       <div class="burbujas" *ngIf="isTankFull"></div>
-      
+
       <!-- Peces nadando, con colores y tamaños distintos -->
       <div class="pez pez1" *ngIf="isTankFull"></div>
       <div class="pez pez2" *ngIf="isTankFull"></div>
       <div class="pez pez3" *ngIf="isTankFull"></div>
       <div class="pez pez4" *ngIf="isTankFull"></div>
-      
+
       <!-- Plantas en el fondo -->
       <div class="plantas"></div>
     </div>

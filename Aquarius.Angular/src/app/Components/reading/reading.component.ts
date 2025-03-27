@@ -28,8 +28,13 @@ export class ReadingGraphComponent implements OnInit {
         );
 
         const pointColors = temperatureValues.map(value => 
-          value > 35 ? 'rgba(255, 0, 0, 1)' : 'rgba(54, 162, 235, 1)' // Rojo si supera 35, azul oscuro si no
+          value > 35 
+            ? 'rgba(255, 0, 0, 1)' // Rojo si supera 35
+            : value < 25 
+              ? 'rgb(95, 244, 255)' // Azul claro (hielo) si es menor a 25
+              : 'rgb(5, 114, 187)' // Azul oscuro para el resto
         );
+        
 
         this.renderLineChart(temperatureValues, timestamps, pointColors); // Renderizamos el gráfico con lógica de colores
       },
