@@ -80,6 +80,7 @@ namespace Aquarius.ConsoleApp
                     };
                     await levelSensorRepository.AddAsync(levelSensor);
 
+      
                     // Generar lecturas de temperatura aleatorias
                     var random = new Random();
                     for (int i = 0; i < 20; i++)
