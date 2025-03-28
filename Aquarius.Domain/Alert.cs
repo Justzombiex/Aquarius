@@ -7,11 +7,11 @@
         public DateTime TimeStamp { get; set; }
         public Guid PondId { get; set; }
         public Pond Pond { get; set; }
-
+        public AlarmType AlarmType { get; set; }
         public bool IsActive { get; set; }
 
         public Alert() { }
-        public Alert(string message, DateTime timestamp, Pond pond)
+        public Alert(string message, DateTime timestamp, Pond pond, AlarmType alarmType)
         {
             Id = Guid.NewGuid();
             Message = message;
@@ -19,6 +19,7 @@
             PondId = pond.Id;
             Pond = pond;
             IsActive = true;
+            AlarmType = alarmType;
         }
     }
 }

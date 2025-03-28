@@ -95,9 +95,10 @@ namespace Aquarius.ConsoleApp
                     // Crear las 3 alertas específicas
                     var alerts = new List<Alert>
                     {
-                    new Alert("Temperatura alta", DateTime.UtcNow, pond),
-                    new Alert("Temperatura baja", DateTime.UtcNow, pond),
-                    new Alert("Desconexión de Arduino", DateTime.UtcNow, pond)
+                    new Alert("Temperatura alta", DateTime.UtcNow, pond, AlarmType.HighTemperature),
+                    new Alert("Temperatura baja", DateTime.UtcNow, pond, AlarmType.LowTemperature),
+                    new Alert("Desconexión de Arduino", DateTime.UtcNow, pond, AlarmType.Disconnection),
+                    new Alert("Nivel inadecuado", DateTime.UtcNow, pond, AlarmType.LowLevel)
                     };
 
 

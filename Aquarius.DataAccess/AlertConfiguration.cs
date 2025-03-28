@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Aquarius.Domain;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Aquarius.Domain;
 
 namespace Aquarius.Data.Configurations
 {
@@ -20,7 +20,13 @@ namespace Aquarius.Data.Configurations
                    .IsRequired();
 
             builder.Property(a => a.IsActive)
-                .IsRequired();
+                   .IsRequired();
+
+            builder.Property(a => a.AlarmType)
+                   .IsRequired()
+                   .HasConversion(v => v.ToString(),
+                   v => (AlarmType)Enum.Parse(typeof(AlarmType), v));
+
 
             // Relación muchos a uno con Pond
             builder.HasOne(a => a.Pond)
