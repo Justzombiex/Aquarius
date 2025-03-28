@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '../../../../services/alert.service';
 import { Alert } from '../../../../models/alert.model';
@@ -8,45 +8,48 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 
+// Enum para representar los tipos de alarmas
+enum AlarmType {
+  HighTemperature = 0,
+  LowTemperature = 1,
+  Disconnection = 2,
+  LowLevel = 3,
+}
+
 @Component({
   selector: 'app-alert-list',
   templateUrl: './alert.list.component.html',
   styleUrls: ['./alert.list.component.css'],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
 })
 export class AlertListComponent implements OnInit {
   private alertService = inject(AlertService);
   private dialog = inject(MatDialog);
 
   alerts: Alert[] = [];
-  isAlarmActive: boolean = false;
-  
-  // Estados locales de reconocimiento (actualizado con dryPond)
   localAckStates = {
     highTemp: false,
     lowTemp: false,
     disconnection: false,
-    dryPond: false
+    lowLevel: false,
   };
 
   ngOnInit(): void {
-    this.fetchAlerts();
-  }
-
-  fetchAlerts(): void {
+    // Cargar las alertas desde el servicio
     this.alertService.getAlerts().subscribe({
       next: (data) => {
-        this.alerts = data;
-        this.isAlarmActive = this.alerts.length > 0;
+        this.alerts = data; // Guardar las alertas en la variable local
+        console.log('Alertas cargadas:', this.alerts);
+
+        // Verificar el estado de las alarmas usando métodos
+        console.log('Alta temperatura activa:', this.hasActiveHighTemperatureAlarms());
+        console.log('Baja temperatura activa:', this.hasActiveLowTemperatureAlarms());
+        console.log('Desconexión activa:', this.hasActiveDisconnectionAlarms());
+        console.log('Nivel bajo activo:', this.hasActiveLowLevelAlarms());
       },
       error: (err) => {
-        console.error('Error al obtener las alertas:', err);
+        console.error('Error al cargar las alertas:', err);
       },
     });
   }
@@ -59,38 +62,47 @@ export class AlertListComponent implements OnInit {
     });
   }
 
-  // Método solo para interfaz (actualizado con dryPond)
-  acknowledgeLocalAlert(type: 'highTemp' | 'lowTemp' | 'disconnection' | 'dryPond'): void {
+  // Métodos para verificar el estado de cada tipo de alarma
+  hasActiveHighTemperatureAlarms(): boolean {
+    return this.alerts.some(
+      (alert) => alert.isActive && Number(alert.alarmType) === AlarmType.HighTemperature
+    );
+  }
+
+  hasActiveLowTemperatureAlarms(): boolean {
+    return this.alerts.some(
+      (alert) => alert.isActive && Number(alert.alarmType) === AlarmType.LowTemperature
+    );
+  }
+
+  hasActiveDisconnectionAlarms(): boolean {
+    return this.alerts.some(
+      (alert) => alert.isActive && Number(alert.alarmType) === AlarmType.Disconnection
+    );
+  }
+
+  hasActiveLowLevelAlarms(): boolean {
+    return this.alerts.some(
+      (alert) => alert.isActive && Number(alert.alarmType) === AlarmType.LowLevel
+    );
+  }
+
+  acknowledgeLocalAlert(type: 'highTemp' | 'lowTemp' | 'disconnection' | 'lowLevel'): void {
     this.localAckStates[type] = true;
-    
-    // Opcional: Aquí podrías añadir lógica para notificar al backend
-    // cuando una alerta es reconocida localmente
     console.log(`Alarma ${type} reconocida localmente`);
   }
 
-  // Verifica estado local (actualizado con dryPond)
-  isLocalAcknowledged(type: 'highTemp' | 'lowTemp' | 'disconnection' | 'dryPond'): boolean {
+  isLocalAcknowledged(type: 'highTemp' | 'lowTemp' | 'disconnection' | 'lowLevel'): boolean {
     return this.localAckStates[type];
   }
 
-  // Método para activación manual (actualizado con dryPond)
-  activateManualAlert(alertType: 'highTemp' | 'lowTemp' | 'disconnection' | 'dryPond') {
+  activateManualAlert(alertType: 'highTemp' | 'lowTemp' | 'disconnection' | 'lowLevel'): void {
     console.log(`Activando manualmente alarma: ${alertType}`);
-    
-    // Resetear el estado de reconocimiento
     this.localAckStates[alertType] = false;
-    
-    // Aquí puedes agregar lógica para simular la activación
-    // o conectar con tu backend cuando esté listo
-    
-    // Ejemplo de simulación:
     this.simulateAlert(alertType);
   }
 
-  // Método opcional para simular alertas (puedes eliminarlo en producción)
   private simulateAlert(type: string): void {
     console.log(`Simulando alerta de ${type}`);
-    // Aquí podrías añadir lógica para simular la alerta
-    // Por ejemplo, mostrar un mensaje o cambiar algún estado temporal
   }
 }

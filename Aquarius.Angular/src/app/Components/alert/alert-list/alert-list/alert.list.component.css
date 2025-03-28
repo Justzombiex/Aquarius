@@ -216,20 +216,20 @@ mat-card-content p {
   }
 }
 
-/* Estilos para la alerta de Espejo Seco */
-.alert-card.dry-pond {
-  background-color: #fff8e1;
-  border-left: 5px solid #ffc107;
+/* Estilos para la alerta de Nivel Bajo */
+.alert-card.low-level {
+  background-color: #fff8e1; /* Fondo amarillo pálido */
+  border-left: 5px solid #ffc107; /* Borde lateral para indicar alerta */
 }
 
-.alert-card.dry-pond .alert-icon {
-  color: #ffc107;
+.alert-card.low-level .alert-icon {
+  color: #ffc107; /* Color del ícono acorde al tema de alerta */
 }
 
-.status-light.active.dry-pond {
-  background-color: #ffc107;
-  box-shadow: 0 0 20px #ff8f00;
-  animation: waterBlink 1.2s infinite ease-in-out;
+.status-light.active.low-level {
+  background-color: #ffc107; /* Luz de estado activa */
+  box-shadow: 0 0 20px #ff8f00; /* Efecto de brillo para estado activo */
+  animation: waterBlink 1.2s infinite ease-in-out; /* Animación de parpadeo */
 }
 
 @keyframes waterBlink {
