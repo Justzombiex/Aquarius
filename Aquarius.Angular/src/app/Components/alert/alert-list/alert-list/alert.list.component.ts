@@ -52,6 +52,28 @@ export class AlertListComponent implements OnInit {
         console.error('Error al cargar las alertas:', err);
       },
     });
+    this.startAlertMonitoring();
+  }
+
+  private startAlertMonitoring(): void {
+    // Configura un intervalo para chequear las alertas periódicamente
+    setInterval(() => {
+      this.alertService.getAlerts().subscribe({
+        next: (data) => {
+          this.alerts = data;
+          console.log('Alertas actualizadas:', this.alerts);
+
+          // Verifica el estado de las alarmas
+          console.log('Alta temperatura activa:', this.hasActiveHighTemperatureAlarms());
+          console.log('Baja temperatura activa:', this.hasActiveLowTemperatureAlarms());
+          console.log('Desconexión activa:', this.hasActiveDisconnectionAlarms());
+          console.log('Nivel bajo activo:', this.hasActiveLowLevelAlarms());
+        },
+        error: (err) => {
+          console.error('Error al actualizar las alertas:', err);
+        },
+      });
+    }, 2000); // Intervalo de 5 segundos
   }
 
   openAlertDialog(): void {
