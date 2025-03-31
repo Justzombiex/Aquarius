@@ -19,21 +19,11 @@
             : 'Alarma reconocida' }}</p>
         </mat-card-content>
       </div>
-      <div class="card-actions">
-        <mat-card-actions *ngIf="hasActiveHighTemperatureAlarms()">
-          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('highTemp')">Reconocer</button>
-        </mat-card-actions>
-        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('highTemp')">
-          <mat-icon>power_settings_new</mat-icon> Activar
-        </button>
-      </div>
     </mat-card>
     <div class="status-light" 
          [class.active]="hasActiveHighTemperatureAlarms()"
          [class.inactive]="!hasActiveHighTemperatureAlarms()"></div>
   </div>
-  
-  
 
   <!-- Alerta de temperatura baja -->
   <div class="alert-wrapper">
@@ -53,20 +43,11 @@
             : 'Alarma reconocida' }}</p>
         </mat-card-content>
       </div>
-      <div class="card-actions">
-        <mat-card-actions *ngIf="hasActiveLowTemperatureAlarms()">
-          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('lowTemp')">Reconocer</button>
-        </mat-card-actions>
-        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('lowTemp')">
-          <mat-icon>power_settings_new</mat-icon> Activar
-        </button>
-      </div>
     </mat-card>
     <div class="status-light" 
          [class.active]="hasActiveLowTemperatureAlarms()"
          [class.inactive]="!hasActiveLowTemperatureAlarms()"></div>
   </div>
-  
 
   <!-- Alerta de desconexión -->
   <div class="alert-wrapper">
@@ -86,22 +67,13 @@
             : 'Alarma reconocida' }}</p>
         </mat-card-content>
       </div>
-      <div class="card-actions">
-        <mat-card-actions *ngIf="hasActiveDisconnectionAlarms()">
-          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('disconnection')">Reconocer</button>
-        </mat-card-actions>
-        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('disconnection')">
-          <mat-icon>power_settings_new</mat-icon> Activar
-        </button>
-      </div>
     </mat-card>
     <div class="status-light" 
          [class.active]="hasActiveDisconnectionAlarms()"
          [class.inactive]="!hasActiveDisconnectionAlarms()"></div>
   </div>
-  
 
-  <!-- Alerta de Espejo Seco (ausencia de agua) - NUEVA -->
+  <!-- Alerta de nivel bajo -->
   <div class="alert-wrapper">
     <mat-card class="alert-card" 
               [class.low-level]="hasActiveLowLevelAlarms()" 
@@ -119,21 +91,11 @@
             : 'Alarma reconocida' }}</p>
         </mat-card-content>
       </div>
-      <div class="card-actions">
-        <mat-card-actions *ngIf="hasActiveLowLevelAlarms()">
-          <button mat-button class="acknowledge-btn" (click)="acknowledgeLocalAlert('lowLevel')">Reconocer</button>
-        </mat-card-actions>
-        <button mat-button class="manual-activate-btn" (click)="activateManualAlert('lowLevel')">
-          <mat-icon>power_settings_new</mat-icon> Activar
-        </button>
-      </div>
     </mat-card>
     <div class="status-light" 
          [class.active]="hasActiveLowLevelAlarms()"
          [class.inactive]="!hasActiveLowLevelAlarms()"></div>
   </div>
-  
-  
 
   <button mat-button color="primary" class="show-alerts-btn" (click)="openAlertDialog()">
     <mat-icon>list_alt</mat-icon> Mostrar Registro de Alertas
