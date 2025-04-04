@@ -10,7 +10,6 @@ namespace Aquarius.Services.Alerts
         private readonly AlertRepository _alertRepository;
         private readonly EmailService _emailService;
 
-
         public LowTemperature(AlertRepository alertRepository, EmailService emailService)
         {
             _alertRepository = alertRepository ?? throw new ArgumentNullException(nameof(alertRepository));
@@ -19,25 +18,60 @@ namespace Aquarius.Services.Alerts
 
         public async Task Verificar(float temperatura)
         {
+            // Verificar si hay una alerta activa para temperatura baja
+            var alertaActiva = (await _alertRepository.GetActiveByTypeAsync(AlarmType.LowTemperature)).FirstOrDefault();
+
             if (temperatura < TemperaturaMuyBaja)
             {
-                string mensaje = $"¡ALERTA! Temperatura muy baja: {temperatura:F2} °C";
-                Console.WriteLine(mensaje);
-
-                // Crear y guardar la alerta en la base de datos
-                var alerta = new Alert
+                if (alertaActiva == null) // Solo crear una alerta si no existe una activa
                 {
-                    Id = Guid.NewGuid(),
-                    Message = mensaje,
-                    TimeStamp = DateTime.UtcNow,
-                    AlarmType = AlarmType.LowTemperature,
-                    IsActive = true,
-                };
+                    string mensaje = ConstruirMensaje(temperatura);
+                    Console.WriteLine(mensaje);
 
-                await _alertRepository.AddAsync(alerta);
-                // Enviar correo electrónico
-                _emailService.SendEmail("andyternblom@gmail.com", "Alerta de Temperatura Baja", mensaje);
+                    var nuevaAlerta = CrearAlerta(mensaje, true);
+                    await _alertRepository.AddAsync(nuevaAlerta);
+
+                    // Enviar correo electrónico
+                    _emailService.SendEmail(
+                        "andyternblom@gmail.com",
+                        "Alerta de Temperatura Baja",
+                        mensaje
+                    );
+                }
+                else
+                {
+                    Console.WriteLine("Ya existe una alerta activa de temperatura baja.");
+                }
             }
+            else
+            {
+                // Si la temperatura ya no es baja, desactivar la alerta activa
+                if (alertaActiva != null)
+                {
+                    alertaActiva.IsActive = false; // Desactivar la alerta
+                    alertaActiva.TimeStamp = DateTime.UtcNow; // Actualizar el tiempo
+
+                    await _alertRepository.UpdateAsync(alertaActiva);
+                    Console.WriteLine("La alerta de temperatura baja ha sido desactivada.");
+                }
+            }
+        }
+
+        private string ConstruirMensaje(float temperatura)
+        {
+            return $"¡ALERTA! Temperatura muy baja: {temperatura:F2} °C";
+        }
+
+        private Alert CrearAlerta(string mensaje, bool isActive)
+        {
+            return new Alert
+            {
+                Id = Guid.NewGuid(),
+                Message = mensaje,
+                TimeStamp = DateTime.UtcNow,
+                AlarmType = AlarmType.LowTemperature,
+                IsActive = isActive,
+            };
         }
     }
 }

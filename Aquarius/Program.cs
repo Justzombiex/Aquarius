@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using System.IO.Ports;
 using Aquarius.Services.Alerts;
 using Aquarius.Services.Services;
+using Aquarius.Domain;
 
 
 namespace Aquarius.Services
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -75,69 +76,62 @@ namespace Aquarius.Services
             // Ejecución de la Aplicación
             app.Run();
 
-            // Crear el contexto de la base de datos y el repositorio
-            var dbContext = new AquariusDbContext(); // Asegúrate de configurar tu DbContext correctamente
-            var alertRepository = new AlertRepository(dbContext);
-            var builders = WebApplication.CreateBuilder(args);
-            IConfiguration configuration = builder.Configuration;
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
 
-            var emailService = new EmailService(configuration);
+            var dbContext = services.GetRequiredService<AquariusDbContext>();
 
-            // Crear instancias de las clases de alerta
-            LowTemperature alertaTemperaturaBaja = new LowTemperature(alertRepository, emailService);
-            HighTemperature alertaTemperaturaAlta = new HighTemperature(alertRepository, emailService);
-            WaterLevelAlert alertaFaltaDeAgua = new WaterLevelAlert(alertRepository, emailService);
+            // Verificar y crear Farm
+            var farmRepository = services.GetRequiredService<IFarmRepository>();
+            var farm = (await farmRepository.GetAllAsync()).FirstOrDefault();
+            if (farm == null)
+            {
+                farm = new Farm("Granja Principal", "Ubicación Principal");
+                await farmRepository.AddAsync(farm);
+                Console.WriteLine("Granja creada: Granja Principal");
+            }
 
-            //Obtener los datos del Arduino
+            // Verificar y crear Pond
+            var pondRepository = services.GetRequiredService<IPondRepository>();
+            var pond = (await pondRepository.GetAllAsync()).FirstOrDefault();
+            if (pond == null)
+            {
+                pond = new Pond("Estanque Principal", 5000, farm); // Capacidad arbitraria de 5000
+                await pondRepository.AddAsync(pond);
+                Console.WriteLine("Estanque creado: Estanque Principal");
+            }
+
+            // Verificar y crear LevelSensor
+            var levelSensorRepository = services.GetRequiredService<ILevelSensorRepository>();
+            var levelSensor = (await levelSensorRepository.GetAllAsync()).FirstOrDefault();
+            if (levelSensor == null)
+            {
+                levelSensor = new LevelSensor(true, pond); // Pond referenciado
+                await levelSensorRepository.AddAsync(levelSensor);
+                Console.WriteLine("Sensor de Nivel creado: FullPond = true");
+            }
+
+            // Verificar y crear TemperatureSensor
+            var temperatureSensorRepository = services.GetRequiredService<ITemperatureSensorRepository>();
+            var temperatureSensor = (await temperatureSensorRepository.GetAllAsync()).FirstOrDefault();
+            if (temperatureSensor == null)
+            {
+                temperatureSensor = new TemperatureSensor(pond); // Pond referenciado
+                await temperatureSensorRepository.AddAsync(temperatureSensor);
+                Console.WriteLine("Sensor de Temperatura creado");
+            }
 
             // Configurar el puerto serial
-
-            SerialPort serialPort = new SerialPort("COM3", 9600); // Cambia "COM3" por el puerto correcto
-
+            SerialPort serialPort = new SerialPort("COM3", 9600);
             serialPort.Open();
 
+            var dataProcessorService = services.GetRequiredService<DataProcessorService>();
+
+            // Leer y procesar datos del puerto serial
             while (true)
             {
-                // Leer una línea de datos desde el puerto serial
                 string data = serialPort.ReadLine();
-
-                // Procesar los datos recibidos
-                ProcesarDatos(data, alertaTemperaturaBaja, alertaTemperaturaAlta, alertaFaltaDeAgua);
-            }
-        }
-
-        static void ProcesarDatos(string data, LowTemperature alertaTemperaturaBaja,HighTemperature alertaTemperaturaAlta, WaterLevelAlert alertaFaltaDeAgua)
-        {
-            // Dividir los datos en partes (temperatura y nivel)
-            string[] partes = data.Split(',');
-
-            if (partes.Length == 2)
-            {
-                try
-                {
-                    // Extraer el valor de temperatura (float)
-                    string temperaturaStr = partes[0].Substring(2); // Eliminar "T:"
-                    float temperatura = float.Parse(temperaturaStr);
-
-                    // Extraer el valor de nivel (bool)
-                    string nivelStr = partes[1].Substring(2); // Eliminar "L:"
-                    bool nivel = nivelStr == "1"; // Convertir "1" a true y "0" a false
-                                                  // Mostrar los valores en la consola
-                    Console.WriteLine($"Temperatura: {temperatura:F2} °C, Nivel: {nivel}");
-
-                    // Verificar alertas
-                    alertaTemperaturaBaja.Verificar(temperatura);
-                    alertaTemperaturaAlta.Verificar(temperatura);
-                    alertaFaltaDeAgua.Verificar(nivel);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Error: Formato de datos incorrecto.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Error: Datos incompletos.");
+                await dataProcessorService.ProcessDataAsync(data);
             }
         }
     }

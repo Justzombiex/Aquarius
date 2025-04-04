@@ -28,6 +28,13 @@ namespace Aquarius.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Alert>> GetActiveByTypeAsync(AlarmType alarmType) // Implementación del nuevo método
+        {
+            return await _context.Alerts
+                .Where(a => a.AlarmType == alarmType && a.IsActive)
+                .ToListAsync();
+        }
+
         public async Task UpdateAsync(Alert alert)
         {
             _context.Alerts.Update(alert);

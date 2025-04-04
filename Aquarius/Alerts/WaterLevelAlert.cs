@@ -17,25 +17,55 @@ namespace Aquarius.Services.Alerts
 
         public async Task Verificar(bool nivel)
         {
-            if (!nivel) // Si el nivel es false (0), falta agua
+            // Verificar si hay una alerta activa para nivel bajo de agua
+            var alertaActiva = (await _alertRepository.GetActiveByTypeAsync(AlarmType.LowLevel)).FirstOrDefault();
+
+            if (!nivel) // Si el nivel es bajo (false)
             {
-                string mensaje = "¡ALERTA! Falta agua.";
-                Console.WriteLine(mensaje);
-
-                // Crear y guardar la alerta en la base de datos
-                var alerta = new Alert
+                if (alertaActiva == null) // Solo crear una alerta si no existe una activa
                 {
-                    Id = Guid.NewGuid(),
-                    Message = mensaje,
-                    TimeStamp = DateTime.UtcNow,
-                    AlarmType = AlarmType.LowLevel,
-                    IsActive = true,
-                };
+                    string mensaje = "¡ALERTA! Falta agua.";
+                    Console.WriteLine(mensaje);
 
-                await _alertRepository.AddAsync(alerta);
-                // Enviar correo electrónico
-                _emailService.SendEmail("andyternblom@gmail.com", "Alerta de Falta de Agua", mensaje);
+                    var nuevaAlerta = CrearAlerta(mensaje, true);
+                    await _alertRepository.AddAsync(nuevaAlerta);
+
+                    // Enviar correo electrónico
+                    _emailService.SendEmail(
+                        "andyternblom@gmail.com",
+                        "Alerta de Falta de Agua",
+                        mensaje
+                    );
+                }
+                else
+                {
+                    Console.WriteLine("Ya existe una alerta activa de falta de agua.");
+                }
             }
+            else
+            {
+                // Si el nivel de agua es adecuado, desactivar la alerta activa
+                if (alertaActiva != null)
+                {
+                    alertaActiva.IsActive = false; // Desactivar la alerta
+                    alertaActiva.TimeStamp = DateTime.UtcNow; // Actualizar el tiempo
+
+                    await _alertRepository.UpdateAsync(alertaActiva);
+                    Console.WriteLine("La alerta de falta de agua ha sido desactivada.");
+                }
+            }
+        }
+
+        private Alert CrearAlerta(string mensaje, bool isActive)
+        {
+            return new Alert
+            {
+                Id = Guid.NewGuid(),
+                Message = mensaje,
+                TimeStamp = DateTime.UtcNow,
+                AlarmType = AlarmType.LowLevel,
+                IsActive = isActive,
+            };
         }
     }
 }
