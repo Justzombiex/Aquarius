@@ -45,9 +45,9 @@ export class ReadingGraphComponent implements OnInit, OnDestroy { // Implementa 
         );
   
         const pointColors = temperatureValues.map((value) =>
-          value > 35
+          value > 33
             ? 'rgba(255, 0, 0, 1)' // Rojo si supera 35
-            : value < 25
+            : value < 24
             ? 'rgb(95, 244, 255)' // Azul claro si es menor a 25
             : 'rgb(5, 114, 187)' // Azul oscuro para el resto
         );
