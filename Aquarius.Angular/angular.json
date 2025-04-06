@@ -33,7 +33,7 @@
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [  "node_modules/chart.js/dist/chart.js"],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "ssr": {
