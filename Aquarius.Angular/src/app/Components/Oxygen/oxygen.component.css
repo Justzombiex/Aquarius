@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+.oxygen-card {
+  font-family: 'Poppins', sans-serif;
+  width: 280px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 119, 182, 0.1);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.oxygen-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 119, 182, 0.15);
+}
+
+.oxygen-header {
+  height: 100px;
+  background: linear-gradient(to bottom, #e6f7ff 0%, #b3e0ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.oxygen-bubbles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.bubble {
+  position: absolute;
+  background-color: rgba(0, 119, 182, 0.15);
+  border-radius: 50%;
+  animation: bubble-float 4s infinite ease-in;
+}
+
+.bubble-1 {
+  width: 20px;
+  height: 20px;
+  left: 20%;
+  top: 70%;
+  animation-delay: 0s;
+}
+
+.bubble-2 {
+  width: 15px;
+  height: 15px;
+  left: 50%;
+  top: 80%;
+  animation-delay: 1s;
+}
+
+.bubble-3 {
+  width: 12px;
+  height: 12px;
+  left: 70%;
+  top: 75%;
+  animation-delay: 2s;
+}
+
+.oxygen-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.oxygen-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.oxygen-title h2 {
+  margin: 0;
+  color: #0077b6;
+  font-weight: 600;
+}
+
+.oxygen-title mat-icon {
+  color: #00b4d8;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.oxygen-value {
+  font-size: 48px;
+  font-weight: 600;
+  color: #03045e;
+  margin: 10px 0;
+}
+
+.oxygen-value .unit {
+  font-size: 20px;
+  color: #0077b6;
+  margin-left: 5px;
+}
+
+.oxygen-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #e3f2fd;
+  color: #0077b6;
+  padding: 8px 15px;
+  border-radius: 20px;
+  margin: 0 auto;
+  width: fit-content;
+  font-weight: 500;
+}
+
+.oxygen-status mat-icon {
+  color: #4caf50;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes bubble-float {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-100px); opacity: 0; }
+}

@@ -1,0 +1,25 @@
+<div class="oxygen-card">
+    <div class="oxygen-header">
+      <div class="oxygen-bubbles">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="bubble bubble-3"></div>
+      </div>
+    </div>
+    
+    <div class="oxygen-content">
+      <div class="oxygen-title">
+        <mat-icon>water_drop</mat-icon>
+        <h2>Oxígeno Disuelto</h2>
+      </div>
+      
+      <div class="oxygen-value">
+        {{ oxygenLevel }}<span class="unit">mg/L</span>
+      </div>
+      
+      <div class="oxygen-status">
+        <mat-icon>{{ statusIcon }}</mat-icon>
+        {{ status }}
+      </div>
+    </div>
+  </div>

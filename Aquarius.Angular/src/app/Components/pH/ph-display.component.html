@@ -1,0 +1,25 @@
+<div class="ph-card">
+    <div class="ph-visual">
+      <div class="ph-scale">
+        <div class="ph-indicator" [style.left]="calculatePhPosition()"></div>
+      </div>
+      <div class="ph-bubbles">
+        <div *ngFor="let bubble of bubbles" class="bubble" [style]="getBubbleStyle(bubble)"></div>
+      </div>
+    </div>
+    
+    <div class="ph-content">
+      <div class="ph-title">
+        <span class="icon">🧪</span>
+        <h2>Nivel de pH</h2>
+      </div>
+      
+      <div class="ph-value" [class]="'ph-value--' + statusColor">
+        {{ phLevel }}
+      </div>
+      
+      <div class="ph-status" [class]="'ph-status--' + statusColor">
+        {{ status }}
+      </div>
+    </div>
+  </div>
