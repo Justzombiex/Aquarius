@@ -14,13 +14,12 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "paths": {
-    "chart.js": ["node_modules/chart.js/dist/chart.js"]
-  }
+    "typeRoots": ["./node_modules/@types"]
+
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
