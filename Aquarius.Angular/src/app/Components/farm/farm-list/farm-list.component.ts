@@ -13,6 +13,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 
 import { AlertListComponent } from "../../alert/alert-list/alert-list/alert.list.component";
 import { DashBoard } from "../../dashboard/dashboard";
+import { ReadingStatsComponent } from "../../estad\u00EDsticas/reading-stats.component";
 
 @Component({
   selector: 'app-farm-list',
@@ -27,7 +28,8 @@ import { DashBoard } from "../../dashboard/dashboard";
     MatToolbarModule,
     MatExpansionModule,
     AlertListComponent,
-    DashBoard
+    DashBoard,
+    ReadingStatsComponent
 ],
   templateUrl: './farm-list.component.html',
   styleUrls: ['./farm-list.component.css'],

@@ -1,6 +1,6 @@
 <mat-sidenav-container class="sidenav-container">
   <!-- Menú lateral -->
-  <mat-sidenav mode="side" opened>
+  <mat-sidenav mode="side" opened class="sidenav">
     <mat-toolbar color="primary">Granjas</mat-toolbar>
     <mat-nav-list>
       <button mat-button (click)="selectOption('tilapia')">
@@ -8,7 +8,6 @@
       </button>
       <button mat-button (click)="selectOption('variables')">Variables</button>
       <button mat-button (click)="selectOption('alert')">Alertas</button>
-      <button mat-button (click)="selectOption('costo')">Costo</button>
       <button mat-button (click)="selectOption('estadisticas')">
         Informe y estadísticas
       </button>
@@ -48,16 +47,12 @@
         <mat-toolbar color="warn">Datos de los sensores</mat-toolbar>
         <dashboard></dashboard>
       </div>
+
       <div *ngIf="selectedOption === 'alert'">
         <mat-toolbar color="warn">Alertas</mat-toolbar>
         <app-alert-list></app-alert-list>
       </div>
-      <div *ngIf="selectedOption === 'costo'">
-        <mat-toolbar color="primary">Costo del Proyecto</mat-toolbar>
-        <div class="cost-info">
-          <!-- Contenido del costo -->
-        </div>
-      </div>
+
       <div *ngIf="selectedOption === 'configuracion'">
         <mat-toolbar color="primary">Configuración</mat-toolbar>
         <div class="settings-info">
@@ -74,24 +69,12 @@
           </ul>
         </div>
       </div>
+
       <div *ngIf="selectedOption === 'estadisticas'">
         <mat-toolbar color="accent">Informe y estadísticas</mat-toolbar>
-        <div class="statistics-info">
-          <h2>Informe y estadísticas</h2>
-          <p>
-            Visualiza datos históricos y análisis de rendimiento de la granja.
-          </p>
-          <h3>Gráficos:</h3>
-          <ul>
-            <li>Producción mensual</li>
-            <li>Consumo de alimentación</li>
-            <li>Condiciones del agua</li>
-          </ul>
-          <div style="margin-top: 20px">
-            <img src="assets/performance-graph.jpg" alt="Gráfico de rendimiento" />
-          </div>
-        </div>
+        <app-reading-stats></app-reading-stats>
       </div>
+
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
