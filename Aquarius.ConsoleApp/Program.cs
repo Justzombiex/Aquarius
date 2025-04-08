@@ -1,14 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.IO.Ports;
-using System.Linq;
-using System.Threading.Tasks;
-using Aquarius.Data;
+﻿using Aquarius.Data;
 using Aquarius.Data.Repositories;
 using Aquarius.Domain;
 using Aquarius.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
+using System.IO.Ports;
 
 namespace Aquarius.ConsoleApp
 {
@@ -49,7 +46,7 @@ namespace Aquarius.ConsoleApp
             }
 
             // Verificar y crear LevelSensor
-           
+
 
             // Verificar y crear TemperatureSensor
             var temperatureSensorRepository = services.GetRequiredService<ITemperatureSensorRepository>();
@@ -106,7 +103,7 @@ namespace Aquarius.ConsoleApp
                             AlarmType = AlarmType.Disconnection,           // Tipo de alarma: Desconexión
                             IsActive = true                               // Configuración para isActive
                         };
-                        await alertRepository.AddAsync (alertD);
+                        await alertRepository.AddAsync(alertD);
                     }
                     else
                     {
@@ -193,7 +190,7 @@ namespace Aquarius.ConsoleApp
                             Console.WriteLine("Error al convertir la temperatura.");
                         }
 
-                        if(temperatura <= 33)
+                        if (temperatura <= 33)
                         {
                             var alertRepository = services.GetRequiredService<IAlertRepository>();
                             var alertHi = (await alertRepository.GetActiveByTypeAsync(AlarmType.HighTemperature)).FirstOrDefault();
@@ -316,6 +313,6 @@ namespace Aquarius.ConsoleApp
 
             services.AddTransient<DataProcessorService>();
         }
-      
+
     }
 }
