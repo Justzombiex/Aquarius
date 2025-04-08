@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Aquarius.Application\Aquarius.Application.csproj" />
     <ProjectReference Include="..\Aquarius.DataAccess\Aquarius.DataAccess.csproj" />
     <ProjectReference Include="..\Aquarius.Domain\Aquarius.Domain.csproj" />
+    <ProjectReference Include="..\Aquarius\Aquarius.Services.csproj" />
   </ItemGroup>
 
 </Project>

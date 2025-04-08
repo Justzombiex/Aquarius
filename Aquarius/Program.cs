@@ -1,10 +1,9 @@
 using Aquarius.Data;
 using Aquarius.Data.Repositories;
+using Aquarius.Domain;
+using Aquarius.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Ports;
-using Aquarius.Services.Alerts;
-using Aquarius.Services.Services;
-using Aquarius.Domain;
 
 
 namespace Aquarius.Services
@@ -73,66 +72,8 @@ namespace Aquarius.Services
             // Mapear Controladores
             app.MapControllers();
 
-            // Ejecución de la Aplicación
             app.Run();
 
-            using var scope = app.Services.CreateScope();
-            var services = scope.ServiceProvider;
-
-            var dbContext = services.GetRequiredService<AquariusDbContext>();
-
-            // Verificar y crear Farm
-            var farmRepository = services.GetRequiredService<IFarmRepository>();
-            var farm = (await farmRepository.GetAllAsync()).FirstOrDefault();
-            if (farm == null)
-            {
-                farm = new Farm("Granja Principal", "Ubicación Principal");
-                await farmRepository.AddAsync(farm);
-                Console.WriteLine("Granja creada: Granja Principal");
-            }
-
-            // Verificar y crear Pond
-            var pondRepository = services.GetRequiredService<IPondRepository>();
-            var pond = (await pondRepository.GetAllAsync()).FirstOrDefault();
-            if (pond == null)
-            {
-                pond = new Pond("Estanque Principal", 5000, farm); // Capacidad arbitraria de 5000
-                await pondRepository.AddAsync(pond);
-                Console.WriteLine("Estanque creado: Estanque Principal");
-            }
-
-            // Verificar y crear LevelSensor
-            var levelSensorRepository = services.GetRequiredService<ILevelSensorRepository>();
-            var levelSensor = (await levelSensorRepository.GetAllAsync()).FirstOrDefault();
-            if (levelSensor == null)
-            {
-                levelSensor = new LevelSensor(true, pond); // Pond referenciado
-                await levelSensorRepository.AddAsync(levelSensor);
-                Console.WriteLine("Sensor de Nivel creado: FullPond = true");
-            }
-
-            // Verificar y crear TemperatureSensor
-            var temperatureSensorRepository = services.GetRequiredService<ITemperatureSensorRepository>();
-            var temperatureSensor = (await temperatureSensorRepository.GetAllAsync()).FirstOrDefault();
-            if (temperatureSensor == null)
-            {
-                temperatureSensor = new TemperatureSensor(pond); // Pond referenciado
-                await temperatureSensorRepository.AddAsync(temperatureSensor);
-                Console.WriteLine("Sensor de Temperatura creado");
-            }
-
-            // Configurar el puerto serial
-            SerialPort serialPort = new SerialPort("COM3", 9600);
-            serialPort.Open();
-
-            var dataProcessorService = services.GetRequiredService<DataProcessorService>();
-
-            // Leer y procesar datos del puerto serial
-            while (true)
-            {
-                string data = serialPort.ReadLine();
-                await dataProcessorService.ProcessDataAsync(data);
-            }
         }
     }
 }

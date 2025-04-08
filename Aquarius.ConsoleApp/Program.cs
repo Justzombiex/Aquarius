@@ -1,6 +1,12 @@
-﻿using Aquarius.Data;
+﻿using System;
+using System.Globalization;
+using System.IO.Ports;
+using System.Linq;
+using System.Threading.Tasks;
+using Aquarius.Data;
 using Aquarius.Data.Repositories;
 using Aquarius.Domain;
+using Aquarius.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,148 +14,308 @@ namespace Aquarius.ConsoleApp
 {
     class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            // Configuración del servicio de inyección de dependencias
-            var serviceProvider = new ServiceCollection()
-                .AddDbContext<AquariusDbContext>(options =>
-                    options.UseNpgsql("Host=localhost;Database=AquariusDB;Username=postgres;Password=1234"))
-                .AddScoped<IFarmRepository, FarmRepository>()
-                .AddScoped<IPondRepository, PondRepository>()
-                .AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>()
-                .AddScoped<ILevelSensorRepository, LevelSensorRepository>()
-                .AddScoped<IReadingRepository, ReadingRepository>()
-                .AddScoped<IAlertRepository, AlertRepository>()
-                .BuildServiceProvider();
+            // Configurar servicios y dependencias
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
 
-            // Crear datos iniciales y manejar la base de datos
-            using (var scope = serviceProvider.CreateScope())
+            // Construcción del ServiceProvider
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            using var scope = serviceProvider.CreateScope();
+            var services = scope.ServiceProvider;
+
+            var dbContext = services.GetRequiredService<AquariusDbContext>();
+
+            // Verificar y crear Farm
+            var farmRepository = services.GetRequiredService<IFarmRepository>();
+            var farm = (await farmRepository.GetAllAsync()).FirstOrDefault();
+            if (farm == null)
             {
-                var context = scope.ServiceProvider.GetRequiredService<AquariusDbContext>();
-                await context.Database.EnsureCreatedAsync(); // Crear la base de datos si no existe
+                farm = new Farm("Granja Principal", "Ubicación Principal");
+                await farmRepository.AddAsync(farm);
+                Console.WriteLine("Granja creada: Granja Principal");
+            }
 
-                var farmRepository = scope.ServiceProvider.GetRequiredService<IFarmRepository>();
-                var pondRepository = scope.ServiceProvider.GetRequiredService<IPondRepository>();
-                var temperatureSensorRepository = scope.ServiceProvider.GetRequiredService<ITemperatureSensorRepository>();
-                var levelSensorRepository = scope.ServiceProvider.GetRequiredService<ILevelSensorRepository>();
-                var readingRepository = scope.ServiceProvider.GetRequiredService<IReadingRepository>();
-                var alertRepository = scope.ServiceProvider.GetRequiredService<IAlertRepository>();
+            // Verificar y crear Pond
+            var pondRepository = services.GetRequiredService<IPondRepository>();
+            var pond = (await pondRepository.GetAllAsync()).FirstOrDefault();
+            if (pond == null)
+            {
+                pond = new Pond("Estanque Principal", 5000, farm); // Capacidad arbitraria de 5000
+                await pondRepository.AddAsync(pond);
+                Console.WriteLine("Estanque creado: Estanque Principal");
+            }
 
-                // Crear y guardar datos si no existen
-                if (!(await farmRepository.GetAllAsync()).Any())
+            // Verificar y crear LevelSensor
+           
+
+            // Verificar y crear TemperatureSensor
+            var temperatureSensorRepository = services.GetRequiredService<ITemperatureSensorRepository>();
+            var temperatureSensor = (await temperatureSensorRepository.GetAllAsync()).FirstOrDefault();
+            if (temperatureSensor == null)
+            {
+                temperatureSensor = new TemperatureSensor(pond); // Pond referenciado
+                await temperatureSensorRepository.AddAsync(temperatureSensor);
+                Console.WriteLine("Sensor de Temperatura creado");
+            }
+
+            // Configurar el puerto serial
+            try
+            {
+                SerialPort serialPort = new SerialPort("COM3", 9600);
+                serialPort.Open();
+
+                if (serialPort.IsOpen)
                 {
-                    Console.WriteLine("Creando datos iniciales...");
-
-                    // Crear una granja
-                    var farm = new Farm
+                    Console.WriteLine("Puerto abierto");
+                    var alertRepository = services.GetRequiredService<IAlertRepository>();
+                    var alertDisconnection = (await alertRepository.GetActiveByTypeAsync(AlarmType.Disconnection)).FirstOrDefault();
+                    if (alertDisconnection != null)
                     {
-                        Id = Guid.NewGuid(),
-                        Name = "Granja Principal",
-                        Location = "Ubicación A"
-                    };
-                    await farmRepository.AddAsync(farm);
-
-                    // Crear un estanque
-                    var pond = new Pond
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Estanque Principal",
-                        Capacity = 1000,
-                        FarmId = farm.Id
-                    };
-                    await pondRepository.AddAsync(pond);
-
-                    // Crear un sensor de temperatura
-                    var temperatureSensor = new TemperatureSensor
-                    {
-                        Id = Guid.NewGuid(),
-                        PondId = pond.Id
-                    };
-                    await temperatureSensorRepository.AddAsync(temperatureSensor);
-
-                    // Crear un sensor de nivel con estado Full
-                    var levelSensor = new LevelSensor
-                    {
-                        Id = Guid.NewGuid(),
-                        FullPond = true,
-                        PondId = pond.Id
-                    };
-                    await levelSensorRepository.AddAsync(levelSensor);
-
-
-                    // Generar lecturas de temperatura aleatorias
-                    var random = new Random();
-                    for (int i = 0; i < 20; i++)
-                    {
-                        var temperatureValue = random.NextDouble() * (40 - 20) + 20;
-                        var reading = new Reading
+                        var alertD = new Alert
                         {
-                            Id = Guid.NewGuid(),
-                            Value = Math.Round(temperatureValue, 2),
-                            Timestamp = DateTime.UtcNow.AddMinutes(-20 + i),
-                            SensorId = temperatureSensor.Id
+                            Id = alertDisconnection.Id,
+                            Message = alertDisconnection.Message,          // Mensaje de la alerta de desconexión
+                            TimeStamp = alertDisconnection.TimeStamp,      // Marca de tiempo de la alerta
+                            Pond = pond,                                   // Referencia al estanque
+                            AlarmType = AlarmType.Disconnection,           // Tipo de alarma: Desconexión
+                            IsActive = false                               // Configuración para isActive
                         };
-                        await readingRepository.AddAsync(reading);
+                        await alertRepository.DeleteAsync(alertDisconnection.Id);
+                        await alertRepository.AddAsync(alertD);
                     }
-
-                    // Crear las 3 alertas específicas
-                    var alerts = new List<Alert>
+                    else
                     {
-                    new Alert("Temperatura alta", DateTime.UtcNow, pond, AlarmType.HighTemperature),
-                    new Alert("Temperatura baja", DateTime.UtcNow, pond, AlarmType.LowTemperature),
-                    new Alert("Desconexión de Arduino", DateTime.UtcNow, pond, AlarmType.Disconnection),
-                    new Alert("Nivel inadecuado", DateTime.UtcNow, pond, AlarmType.LowLevel)
-                    };
-
-
-                    foreach (var alert in alerts)
-                    {
-                        await alertRepository.AddAsync(alert);
+                        Console.WriteLine("No hay alerta de desconcexión activa");
                     }
-
-                    Console.WriteLine("Datos iniciales creados correctamente.");
+                }
+                else
+                {
+                    Console.WriteLine("Puerto no abierto");
+                    var alertRepository = services.GetRequiredService<IAlertRepository>();
+                    var alertDisconnection = await alertRepository.GetActiveByTypeAsync(AlarmType.Disconnection);
+                    if (alertDisconnection == null || !alertDisconnection.Any())
+                    {
+                        var alertD = new Alert
+                        {
+                            Message = "Desconexión con el Arduino",          // Mensaje de la alerta de desconexión
+                            TimeStamp = DateTime.UtcNow,      // Marca de tiempo de la alerta
+                            Pond = pond,                                   // Referencia al estanque
+                            AlarmType = AlarmType.Disconnection,           // Tipo de alarma: Desconexión
+                            IsActive = true                               // Configuración para isActive
+                        };
+                        await alertRepository.AddAsync (alertD);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ya hay una alerta de desconexión activa");
+                    }
                 }
 
-                // Mostrar datos existentes en la base de datos
-                Console.WriteLine("\nInformación de la base de datos:");
-                var farms = await farmRepository.GetAllAsync();
-                foreach (var farm in farms)
+
+                while (true)
                 {
-                    Console.WriteLine($"\nGranja: {farm.Name} ({farm.Location})");
+                    serialPort.ReadTimeout = 3000;
 
-                    var ponds = await pondRepository.GetAllAsync();
-                    foreach (var pond in ponds.Where(p => p.FarmId == farm.Id))
+                    try
                     {
-                        Console.WriteLine($"  Estanque: {pond.Name} (Capacidad: {pond.Capacity})");
+                        // Leer el nivel (primera línea)
+                        string nivelData = serialPort.ReadLine().Trim(); // Leer y limpiar la línea
+                        bool nivel = nivelData == "1"; // Convertir "1" a true y "0" a false
+                        Console.WriteLine($"Nivel: {nivel}");
 
-                        var levelSensors = await levelSensorRepository.GetAllAsync();
-                        foreach (var sensor in levelSensors.Where(ls => ls.PondId == pond.Id))
+                        if (nivel == true)
                         {
-                            Console.WriteLine($"    Sensor de Nivel: {(sensor.FullPond ? "Estanque lleno" : "Estanque vacío")}");
-                        }
-
-                        var temperatureSensors = await temperatureSensorRepository.GetAllAsync();
-                        foreach (var sensor in temperatureSensors.Where(ts => ts.PondId == pond.Id))
-                        {
-                            Console.WriteLine($"    Sensor de Temperatura: {sensor.Id}");
-
-                            var readings = await readingRepository.GetAllAsync();
-                            foreach (var reading in readings.Where(r => r.SensorId == sensor.Id))
+                            var alertRepository = services.GetRequiredService<IAlertRepository>();
+                            var alertLevel = (await alertRepository.GetActiveByTypeAsync(AlarmType.LowLevel)).FirstOrDefault();
+                            if (alertLevel != null)
                             {
-                                Console.WriteLine($"      Lectura: {reading.Value} °C (Registrada: {reading.Timestamp})");
+                                var alertL = new Alert
+                                {
+                                    Id = alertLevel.Id,
+                                    Message = alertLevel.Message,          // Mensaje de la alerta de desconexión
+                                    TimeStamp = alertLevel.TimeStamp,      // Marca de tiempo de la alerta
+                                    Pond = pond,                                   // Referencia al estanque
+                                    AlarmType = AlarmType.Disconnection,           // Tipo de alarma: Desconexión
+                                    IsActive = false                               // Configuración para isActive
+                                };
+                                await alertRepository.DeleteAsync(alertLevel.Id);
+                                await alertRepository.AddAsync(alertL);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Todo bien con la alerta de nivel");
+                            }
+                        }
+                        else
+                        {
+                            var alertRepository = services.GetRequiredService<IAlertRepository>();
+                            var alertLevel = (await alertRepository.GetActiveByTypeAsync(AlarmType.LowLevel)).FirstOrDefault();
+                            if (alertLevel != null)
+                            {
+                                Console.WriteLine("Hay alerta de nivel activa");
+                            }
+                            else
+                            {
+                                var alertL = new Alert
+                                {
+                                    Message = "Estanque seco",         // Mensaje de la alerta de desconexión
+                                    TimeStamp = DateTime.UtcNow,      // Marca de tiempo de la alerta
+                                    Pond = pond,                                   // Referencia al estanque
+                                    AlarmType = AlarmType.LowLevel,           // Tipo de alarma: Desconexión
+                                    IsActive = true                              // Configuración para isActive
+                                };
+                                await alertRepository.AddAsync(alertL);
                             }
                         }
 
-                        var alerts = await alertRepository.GetAllAsync();
-                        foreach (var alert in alerts.Where(a => a.PondId == pond.Id))
+                        var levelSensorRepository = services.GetRequiredService<ILevelSensorRepository>();
+                        var levelSensor = (await levelSensorRepository.GetAllAsync()).FirstOrDefault();
+                        await levelSensorRepository.DeleteAsync(levelSensor.Id);
+                        await levelSensorRepository.AddAsync(levelSensor);
+
+                        // Leer la temperatura (segunda línea)
+                        string tempData = serialPort.ReadLine().Trim(); // Leer y limpiar la línea
+
+                        // Utilizar CultureInfo para asegurar el formato correcto
+                        if (float.TryParse(tempData, NumberStyles.Float, CultureInfo.InvariantCulture, out float temperatura))
                         {
-                            Console.WriteLine($"    Alerta: {alert.Message} ({alert.TimeStamp})");
+                            Console.WriteLine($"Temperatura: {temperatura}");
+
+                            var reading = new Reading(temperatura, DateTime.UtcNow, temperatureSensor);
+                            var readingRepository = services.GetRequiredService<IReadingRepository>();
+                            await readingRepository.AddAsync(reading);
                         }
+                        else
+                        {
+                            Console.WriteLine("Error al convertir la temperatura.");
+                        }
+
+                        if(temperatura <= 33)
+                        {
+                            var alertRepository = services.GetRequiredService<IAlertRepository>();
+                            var alertHi = (await alertRepository.GetActiveByTypeAsync(AlarmType.HighTemperature)).FirstOrDefault();
+                            if (alertHi != null)
+                            {
+                                var alertH = new Alert
+                                {
+                                    Id = alertHi.Id,
+                                    Message = alertHi.Message,          // Mensaje de la alerta de desconexión
+                                    TimeStamp = alertHi.TimeStamp,      // Marca de tiempo de la alerta
+                                    Pond = pond,                                   // Referencia al estanque
+                                    AlarmType = AlarmType.HighTemperature,           // Tipo de alarma: Desconexión
+                                    IsActive = false                               // Configuración para isActive
+                                };
+                                await alertRepository.DeleteAsync(alertHi.Id);
+                                await alertRepository.AddAsync(alertH);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Todo bien con la alerta de temperatura alta");
+                            }
+                        }
+                        else
+                        {
+                            var alertRepository = services.GetRequiredService<IAlertRepository>();
+                            var alertHi = (await alertRepository.GetActiveByTypeAsync(AlarmType.HighTemperature)).FirstOrDefault();
+                            if (alertHi != null)
+                            {
+                                Console.WriteLine("Hay alerta de temperatura alta activa");
+                            }
+                            else
+                            {
+                                var alertH = new Alert
+                                {
+                                    Message = "Temperatura alta",         // Mensaje de la alerta de desconexión
+                                    TimeStamp = DateTime.UtcNow,      // Marca de tiempo de la alerta
+                                    Pond = pond,                                   // Referencia al estanque
+                                    AlarmType = AlarmType.HighTemperature,           // Tipo de alarma: Desconexión
+                                    IsActive = true                              // Configuración para isActive
+                                };
+                                await alertRepository.AddAsync(alertH);
+                            }
+                        }
+
+                        if (temperatura >= 24)
+                        {
+                            var alertRepository = services.GetRequiredService<IAlertRepository>();
+                            var alertLo = (await alertRepository.GetActiveByTypeAsync(AlarmType.LowTemperature)).FirstOrDefault();
+                            if (alertLo != null)
+                            {
+                                var alertLow = new Alert
+                                {
+                                    Id = alertLo.Id,
+                                    Message = alertLo.Message,          // Mensaje de la alerta de desconexión
+                                    TimeStamp = alertLo.TimeStamp,      // Marca de tiempo de la alerta
+                                    Pond = pond,                                   // Referencia al estanque
+                                    AlarmType = AlarmType.LowTemperature,           // Tipo de alarma: Desconexión
+                                    IsActive = false                               // Configuración para isActive
+                                };
+                                await alertRepository.DeleteAsync(alertLo.Id);
+                                await alertRepository.AddAsync(alertLow);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Todo bien con la alerta de baja");
+                            }
+                        }
+                        else
+                        {
+                            var alertRepository = services.GetRequiredService<IAlertRepository>();
+                            var alertLo = (await alertRepository.GetActiveByTypeAsync(AlarmType.LowTemperature)).FirstOrDefault();
+                            if (alertLo != null)
+                            {
+                                Console.WriteLine("Hay alerta de temperatura baja activa");
+                            }
+                            else
+                            {
+                                var alertL = new Alert
+                                {
+                                    Message = "Temperatura baja",         // Mensaje de la alerta de desconexión
+                                    TimeStamp = DateTime.UtcNow,      // Marca de tiempo de la alerta
+                                    Pond = pond,                                   // Referencia al estanque
+                                    AlarmType = AlarmType.LowTemperature,           // Tipo de alarma: Desconexión
+                                    IsActive = true                              // Configuración para isActive
+                                };
+                                await alertRepository.AddAsync(alertL);
+                            }
+                        }
+
+                    }
+                    catch (TimeoutException)
+                    {
+                        Console.WriteLine("No se recibieron datos en el tiempo esperado.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error al procesar los datos: {ex.Message}");
                     }
                 }
             }
-
-            Console.WriteLine("\nPrograma finalizado.");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al abrir el puerto serial: {ex.Message}");
+                // El programa continúa incluso si el puerto no se abre correctamente
+            }
         }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            // Registrar servicios y repositorios
+            services.AddDbContext<AquariusDbContext>(options =>
+                options.UseNpgsql("Host=localhost;Database=AquariusDB;Username=postgres;Password=1234"));
+
+            services.AddScoped<IFarmRepository, FarmRepository>();
+            services.AddScoped<IPondRepository, PondRepository>();
+            services.AddScoped<ILevelSensorRepository, LevelSensorRepository>();
+            services.AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>();
+            services.AddScoped<IReadingRepository, ReadingRepository>();
+            services.AddScoped<IAlertRepository, AlertRepository>();
+
+            services.AddTransient<DataProcessorService>();
+        }
+      
     }
 }

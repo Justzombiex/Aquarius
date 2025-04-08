@@ -34,20 +34,20 @@ namespace Aquarius.Services.Services
 
         public async Task ProcessDataAsync(string data)
         {
-            // Dividir los datos en partes (temperatura y nivel)
-            string[] partes = data.Split(',');
-
-            if (partes.Length == 2)
+            try
             {
-                try
-                {
-                    // Extraer el valor de temperatura (float)
-                    string temperaturaStr = partes[0].Substring(2); // Eliminar "T:"
-                    float temperatura = float.Parse(temperaturaStr);
+                // Dividir los datos en partes con delimitadores de ":" y ","
+                string[] partes = data.Split(new[] { ',', ':' }, StringSplitOptions.RemoveEmptyEntries);
 
+                if (partes.Length == 4 && partes[0] == "Nivel" && partes[2] == "Temperatura")
+                {
                     // Extraer el valor de nivel (bool)
-                    string nivelStr = partes[1].Substring(2); // Eliminar "L:"
+                    string nivelStr = partes[1].Trim();
                     bool nivel = nivelStr == "1"; // Convertir "1" a true y "0" a false
+
+                    // Extraer el valor de temperatura (float)
+                    string temperaturaStr = partes[3].Trim();
+                    float temperatura = float.Parse(temperaturaStr);
 
                     // Mostrar los valores en la consola
                     Console.WriteLine($"Temperatura: {temperatura:F2} °C, Nivel: {nivel}");
@@ -81,15 +81,20 @@ namespace Aquarius.Services.Services
                     await _waterLevelAlert.Verificar(nivel);
                     await _disconnectionAlert.Verificar();
                 }
-                catch (FormatException)
+                else
                 {
-                    Console.WriteLine("Error: Formato de datos incorrecto.");
+                    Console.WriteLine("Error: Datos incompletos o formato incorrecto.");
                 }
             }
-            else
+            catch (FormatException ex)
             {
-                Console.WriteLine("Error: Datos incompletos.");
+                Console.WriteLine($"Error: Formato de datos incorrecto. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error inesperado: {ex.Message}");
             }
         }
+
     }
 }
