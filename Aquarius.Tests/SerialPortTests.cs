@@ -1,15 +1,9 @@
-using System.IO.Ports;
-using Moq;
-using Xunit;
-using System.Linq;
-using System.Threading.Tasks;
+using Aquarius.Data;
 using Aquarius.Data.Repositories;
 using Aquarius.Domain;
-using Microsoft.Extensions.DependencyInjection;
-using Aquarius.Data;
-using System;
-using Microsoft.EntityFrameworkCore;
 using Aquarius.Services.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 public class SerialPortTests
 {
@@ -21,7 +15,7 @@ public class SerialPortTests
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        
+
         using var scope = serviceProvider.CreateScope();
         var services = scope.ServiceProvider;
 

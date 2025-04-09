@@ -13,6 +13,7 @@ namespace Aquarius.ConsoleApp
     {
         public static async Task Main(string[] args)
         {
+
             // Configurar servicios y dependencias
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
@@ -118,10 +119,24 @@ namespace Aquarius.ConsoleApp
 
                     try
                     {
+
+                        string data = serialPort.ReadLine();
+
+                        if (data.StartsWith("0") || data.StartsWith("1"))
+                        {
+                            Console.WriteLine(data);
+                        }
+                        else 
+                        {
+                            continue;
+                        }
+
                         // Leer el nivel (primera línea)
-                        string nivelData = serialPort.ReadLine().Trim(); // Leer y limpiar la línea
+                        string nivelData = data.Substring(0, 1); // Leer y limpiar la línea
                         bool nivel = nivelData == "1"; // Convertir "1" a true y "0" a false
                         Console.WriteLine($"Nivel: {nivel}");
+
+
 
                         if (nivel == true)
                         {
@@ -135,7 +150,7 @@ namespace Aquarius.ConsoleApp
                                     Message = alertLevel.Message,          // Mensaje de la alerta de desconexión
                                     TimeStamp = alertLevel.TimeStamp,      // Marca de tiempo de la alerta
                                     Pond = pond,                                   // Referencia al estanque
-                                    AlarmType = AlarmType.Disconnection,           // Tipo de alarma: Desconexión
+                                    AlarmType = AlarmType.LowLevel,           // Tipo de alarma: Desconexión
                                     IsActive = false                               // Configuración para isActive
                                 };
                                 await alertRepository.DeleteAsync(alertLevel.Id);
@@ -170,11 +185,12 @@ namespace Aquarius.ConsoleApp
 
                         var levelSensorRepository = services.GetRequiredService<ILevelSensorRepository>();
                         var levelSensor = (await levelSensorRepository.GetAllAsync()).FirstOrDefault();
+                        var newLevelSensor = new LevelSensor(nivel, pond);
                         await levelSensorRepository.DeleteAsync(levelSensor.Id);
-                        await levelSensorRepository.AddAsync(levelSensor);
+                        await levelSensorRepository.AddAsync(newLevelSensor);
 
                         // Leer la temperatura (segunda línea)
-                        string tempData = serialPort.ReadLine().Trim(); // Leer y limpiar la línea
+                        string tempData = data.Substring(1).Trim(); // Leer y limpiar la línea
 
                         // Utilizar CultureInfo para asegurar el formato correcto
                         if (float.TryParse(tempData, NumberStyles.Float, CultureInfo.InvariantCulture, out float temperatura))
@@ -312,6 +328,22 @@ namespace Aquarius.ConsoleApp
             services.AddScoped<IAlertRepository, AlertRepository>();
 
             services.AddTransient<DataProcessorService>();
+        }
+
+
+        public float GetTemperatureInRange(float min, float max)
+        {
+            Random _random = new Random();
+
+
+            // Validación para asegurar que min sea menor o igual a max
+            if (min > max)
+            {
+                throw new ArgumentException("El valor mínimo no puede ser mayor que el máximo.");
+            }
+
+            // Generar un valor aleatorio entre min y max
+            return (float)(_random.NextDouble() * (max - min) + min);
         }
 
     }
