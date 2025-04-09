@@ -27,6 +27,7 @@ mat-nav-list {
   border-radius: 8px;
   font-family: 'Poppins', sans-serif; /* Fuente limpia */
   font-size: 18px; /* Letra un poco más grande */
+  height: 100vh;
 }
 
 /* Botones del menú */
